@@ -28,7 +28,7 @@ android {
         }
         fabricfree {
             minifyEnabled true
-            signingConfig signingConfigs.config
+            ext.enableCrashlytics = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {

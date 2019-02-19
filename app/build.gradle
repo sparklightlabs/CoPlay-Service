@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
@@ -17,7 +17,6 @@ android {
     compileSdkVersion(compileSdk)
     buildToolsVersion(buildTools)
     defaultConfig {
-        applicationId = "info.dvkr.screenstream"
         minSdkVersion(minSdk)
         targetSdkVersion(targetSdk)
         versionCode = 30015
@@ -37,14 +36,14 @@ android {
         fabricfree {
             ext.enableCrashlytics = false
             ext.alwaysUpdateBuildId = false
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -89,12 +88,4 @@ dependencies {
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
     debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakcanary"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary"
-}
-
-apply plugin: "com.google.gms.google-services"
-
-android.applicationVariants.all { variant ->
-    if (variant.name == "fabricfree") {
-        project.tasks.getByName("process" + variant.name.capitalize() + "GoogleServices").enabled = false
-    }
 }

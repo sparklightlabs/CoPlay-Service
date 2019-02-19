@@ -1,2 +1,3 @@
+include ':accessibilitydaemon'
 rootProject.buildFileName = "build.gradle"
 include(":app", ":data")
