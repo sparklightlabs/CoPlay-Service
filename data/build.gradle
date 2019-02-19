@@ -5,16 +5,22 @@ apply plugin: 'kotlin-kapt'
 
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('/home/bradyriddle/Desktop/debug.keystore')
+            storePassword 'android'
+        }
+    }
     compileSdkVersion(compileSdk)
     buildToolsVersion(buildTools)
-
     defaultConfig {
         minSdkVersion(minSdk)
         targetSdkVersion(targetSdk)
         versionCode = 30015
         versionName = "3.0.15"
     }
-
     buildTypes {
         debug {
             minifyEnabled true
@@ -22,6 +28,7 @@ android {
         }
         fabricfree {
             minifyEnabled true
+            signingConfig signingConfigs.config
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
@@ -29,12 +36,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         setSourceCompatibility(JavaVersion.VERSION_1_8)
         setTargetCompatibility(JavaVersion.VERSION_1_8)
     }
-
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
         debug.java.srcDirs += 'src/debug/kotlin'
@@ -47,21 +52,17 @@ androidExtensions { experimental = true }
 kapt { useBuildCache = true }
 
 dependencies {
-    implementation("org.jetbrains:annotations:$jetbrainsAnnotations")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
-    implementation("org.jetbrains.kotlin:kotlin-android-extensions-runtime:$kotlinVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
-
-    implementation("androidx.annotation:annotation:$androidxAnnotation")
-    implementation("androidx.core:core:$androidxCore")
-
-    implementation("io.reactivex:rxjava:$rxJava")
-    implementation("com.jakewharton.rxrelay:rxrelay:$rxRelay")
-
-    implementation("io.netty:netty-codec-http:$netty")
-    implementation("io.netty:netty-handler:$netty")
-    implementation("io.reactivex:rxnetty-http:$rxNetty")
-
-    implementation("com.github.iamironz:binaryprefs:$binaryprefs")
-    implementation("com.elvishew:xlog:$xlog")
+    implementation "org.jetbrains:annotations:$jetbrainsAnnotations"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$kotlinVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
+    implementation "androidx.annotation:annotation:$androidxAnnotation"
+    implementation "androidx.core:core:$androidxCore"
+    implementation "io.reactivex:rxjava:$rxJava"
+    implementation "com.jakewharton.rxrelay:rxrelay:$rxRelay"
+    implementation "io.netty:netty-codec-http:$netty"
+    implementation "io.netty:netty-handler:$netty"
+    implementation "io.reactivex:rxnetty-http:$rxNetty"
+    implementation "com.github.iamironz:binaryprefs:$binaryprefs"
+    implementation "com.elvishew:xlog:$xlog"
 }
