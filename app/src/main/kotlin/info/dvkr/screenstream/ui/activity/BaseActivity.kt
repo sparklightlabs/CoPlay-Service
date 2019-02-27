@@ -1,5 +1,6 @@
 package info.dvkr.screenstream.ui.activity
 
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.ServiceConnection
@@ -7,6 +8,7 @@ import android.os.*
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer

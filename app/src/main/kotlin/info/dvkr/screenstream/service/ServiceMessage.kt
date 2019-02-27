@@ -10,7 +10,7 @@ import info.dvkr.screenstream.data.model.TrafficPoint
 import kotlinx.android.parcel.Parcelize
 
 sealed class ServiceMessage : Parcelable {
-    internal companion object {
+     companion object {
         private const val MESSAGE_PARCELABLE = "MESSAGE_PARCELABLE"
 
         fun fromBundle(bundle: Bundle?): ServiceMessage? = bundle?.run {

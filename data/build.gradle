@@ -27,7 +27,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         fabricfree {
-            minifyEnabled true
+            shrinkResources false
+            minifyEnabled false
             ext.enableCrashlytics = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
