@@ -71,6 +71,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setNightMode(settingsReadOnly.nightMode)
         super.onCreate(savedInstanceState)
+        //.packageManager.
     }
 
     override fun onStart() {

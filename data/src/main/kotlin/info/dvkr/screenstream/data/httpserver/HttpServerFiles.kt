@@ -1,6 +1,7 @@
 package info.dvkr.screenstream.data.httpserver
 
 import android.content.Context
+import android.util.Log
 import com.elvishew.xlog.XLog
 import info.dvkr.screenstream.data.R
 import info.dvkr.screenstream.data.other.getLog
@@ -20,6 +21,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         private const val INDEX_HTML_BACKGROUND_COLOR = "BACKGROUND_COLOR"
         private const val INDEX_HTML_SCREEN_STREAM_ADDRESS = "SCREEN_STREAM_ADDRESS"
         private const val INDEX_HTML_START_STOP_ADDRESS = "START_STOP_ADDRESS"
+        private const val INDEX_HTML_APPLICATION_LIST = "APPLICATION_LIST"
         private const val INDEX_HTML_ENABLE_BUTTONS = "ENABLE_BUTTONS"
 
         private const val PINREQUEST_HTML = "pinrequest.html"
@@ -39,6 +41,8 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         const val FULLSCREEN_ON_PNG_ADDRESS = "/fullscreen-on.png"
         const val FULLSCREEN_OFF_PNG_ADDRESS = "/fullscreen-off.png"
         const val START_STOP_PNG_ADDRESS = "/start-stop.png"
+
+        const val LAUNCH_APP_ADDRESS = "/launch-app"
     }
 
     private val applicationContext: Context = context.applicationContext
@@ -70,7 +74,6 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
                 PINREQUEST_HTML_SUBMIT_TEXT.toRegex(),
                 applicationContext.getString(R.string.html_submit_text)
             )
-
     private var htmlEnableButtons = settingsReadOnly.htmlEnableButtons
     private var htmlBackColor = settingsReadOnly.htmlBackColor
     private var enablePin = settingsReadOnly.enablePin
@@ -85,6 +88,15 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         return Pair(htmlEnableButtons, enablePin)
     }
 
+    fun buildApplicationList(): String {
+        var applicationList: String = ""
+        this.applicationContext.packageManager.getInstalledApplications(0).forEach {
+            applicationList += "<a href = /launch-app?${it.packageName}>${it.packageName}</a><br>"
+        }
+
+        return applicationList
+    }
+
     fun configureStreamAddress(): String =
         if (enablePin) "/" + randomString(16) + ".mjpeg"
         else HttpServerFiles.DEFAULT_STREAM_ADDRESS
@@ -93,7 +105,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         if (enablePin) "/" + randomString(16)
         else HttpServerFiles.DEFAULT_START_STOP_ADDRESS
 
-    fun configureIndexHtml(streamAddress: String, startStopAddress: String): String =
+    fun configureIndexHtml(streamAddress: String, startStopAddress: String, appList: String): String =
         baseIndexHtml
             .replaceFirst(
                 INDEX_HTML_ENABLE_BUTTONS.toRegex(),
@@ -105,6 +117,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
             )
             .replaceFirst(INDEX_HTML_SCREEN_STREAM_ADDRESS.toRegex(), streamAddress)
             .replaceFirst(INDEX_HTML_START_STOP_ADDRESS.toRegex(), startStopAddress)
+                .replaceFirst(INDEX_HTML_APPLICATION_LIST.toRegex(),appList )
 
     fun configurePinAddress(): String =
         if (enablePin) DEFAULT_PIN_ADDRESS + pin else DEFAULT_PIN_ADDRESS
@@ -127,7 +140,6 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
 
     private fun getFileFromAssets(context: Context, fileName: String): ByteArray {
         XLog.d(getLog("getFileFromAssets", fileName))
-
         context.assets.open(fileName).use { inputStream ->
             val fileBytes = ByteArray(inputStream.available())
             inputStream.read(fileBytes)

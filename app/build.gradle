@@ -6,13 +6,11 @@ apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'io.fabric'
 
 android {
-
-
     signingConfigs {
         config {
-            keyAlias 'androiddebugkey'
+            keyAlias 'androidkey'
             keyPassword 'android'
-            storeFile file('/home/bradyriddle/Desktop/debug.keystore')
+            storeFile file('Z:/androidkeystore.jks')
             storePassword 'android'
         }
     }
@@ -36,11 +34,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         fabricfree {
+            debuggable true
             ext.enableCrashlytics = false
             ext.alwaysUpdateBuildId = false
-            minifyEnabled false
-            shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            //minifyEnabled true
+            //shrinkResources true
+            //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
         release {
@@ -58,6 +57,10 @@ android {
         debug.java.srcDirs += 'src/debug/kotlin'
         release.java.srcDirs += 'src/release/kotlin'
         fabricfree.java.srcDirs += 'src/fabricfree/kotlin'
+    }
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/io.netty.versions.properties'
     }
 }
 

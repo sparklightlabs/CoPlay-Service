@@ -7,7 +7,6 @@ import info.dvkr.screenstream.data.model.NetInterface
 
 
 interface AppStateMachine {
-
     open class Event {
         object StartStream : Event()
         class StartProjection(val intent: Intent) : Event()

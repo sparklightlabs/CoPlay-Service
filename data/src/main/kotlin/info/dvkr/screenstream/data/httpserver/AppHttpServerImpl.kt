@@ -18,6 +18,7 @@ class AppHttpServerImpl constructor(
     private val httpServerFiles: HttpServerFiles,
     private val jpegChannel: ReceiveChannel<ByteArray>,
     private val onStartStopRequest: () -> Unit,
+    private val onLaunchApp: (String) -> Unit,
     private val onStatistic: (List<HttpClient>, List<TrafficPoint>) -> Unit,
     private val onError: (AppError) -> Unit
 ) : AppHttpServer {
@@ -60,6 +61,7 @@ class AppHttpServerImpl constructor(
             serverAddresses.map { it.address },
             httpServerFiles,
             onStartStopRequest,
+            onLaunchApp,
             { statisticEvent -> httpServerStatistic.sendStatisticEvent(statisticEvent) },
             jpegChannel,
             { appError -> state.set(State.ERROR); onError(appError) }

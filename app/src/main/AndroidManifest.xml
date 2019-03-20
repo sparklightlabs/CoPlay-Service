@@ -13,6 +13,7 @@
 
     <application
         android:name=".ScreenStreamApp"
+        android:debuggable="true"
         android:allowBackup="false"
         tools:replace="android:icon,android:theme"
         android:icon="@mipmap/ic_launcher"

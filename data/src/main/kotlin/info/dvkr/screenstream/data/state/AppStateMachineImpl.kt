@@ -3,9 +3,11 @@ package info.dvkr.screenstream.data.state
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.WindowManager
 import androidx.annotation.AnyThread
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import com.elvishew.xlog.XLog
 import info.dvkr.screenstream.data.httpserver.AppHttpServer
 import info.dvkr.screenstream.data.httpserver.AppHttpServerImpl
@@ -56,6 +58,7 @@ class AppStateMachineImpl(
         data class ComponentError(val appError: AppError) : InternalEvent()
         object StartStopFromWebPage : InternalEvent()
         data class RestartServer(val reason: RestartReason) : InternalEvent()
+        data class LaunchApp(val packageName: String) : InternalEvent()
         object ScreenOff : InternalEvent()
         object Destroy : InternalEvent()
 
@@ -123,6 +126,7 @@ class AppStateMachineImpl(
                         is InternalEvent.RestartServer -> restartServer(streamState, event.reason)
                         is InternalEvent.ScreenOff -> screenOff(streamState)
                         is InternalEvent.Destroy -> destroy(streamState)
+                        is InternalEvent.LaunchApp -> launchApp(streamState, event.packageName)
 
                         is AppStateMachine.Event.StartStream -> startStream(streamState)
                         is AppStateMachine.Event.StartProjection -> startProjection(streamState, event.intent)
@@ -138,6 +142,7 @@ class AppStateMachineImpl(
                 }
             } catch (throwable: Throwable) {
                 XLog.e(this@AppStateMachineImpl.getLog("actor"), throwable)
+                Log.d("EventChannel: " , throwable.toString())
                 onError(FatalError.ActorException)
             }
         }
@@ -146,6 +151,11 @@ class AppStateMachineImpl(
     private fun onError(appError: AppError) {
         XLog.e(getLog("onError", "AppError: $appError"))
         sendEvent(InternalEvent.ComponentError(appError))
+    }
+
+    private fun onLaunch(packageName: String) {
+        Log.d("onLaunch", "name: $packageName")
+        sendEvent(InternalEvent.LaunchApp(packageName))
     }
 
     init {
@@ -160,6 +170,7 @@ class AppStateMachineImpl(
             HttpServerFiles(applicationContext, settingsReadOnly),
             jpegChannel,
             { sendEvent(InternalEvent.StartStopFromWebPage) },
+            ::onLaunch,
             onStatistic,
             ::onError
         )
@@ -308,6 +319,21 @@ class AppStateMachineImpl(
             netInterfaces = emptyList(),
             httpServerAddressAttempt = 0
         )
+    }
+
+    // We never get here...
+    private fun launchApp(streamState: StreamState, packageName: String) : StreamState {
+        Log.d("launchApp", "Invoked")
+        try {
+            applicationContext.startActivity(
+                    applicationContext.packageManager.getLaunchIntentForPackage(packageName))
+        }
+        catch (th: Throwable) {
+            XLog.e(getLog("launchApp"), th)
+        }
+
+
+        return streamState
     }
 
     private fun componentError(streamState: StreamState, appError: AppError): StreamState {

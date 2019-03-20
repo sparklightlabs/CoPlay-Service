@@ -10,13 +10,13 @@ class ScreenStreamApp : BaseApp() {
 
     override fun initLogger() {
         val logConfiguration = LogConfiguration.Builder()
-            .logLevel(LogLevel.DEBUG)
+            .logLevel(LogLevel.ALL)
             .tag("SSApp")
             .addInterceptor(object : AbstractFilterInterceptor() {
                 override fun reject(log: LogItem): Boolean = settingsReadOnly.loggingOn.not()
             })
             .build()
 
-        XLog.init(logConfiguration, filePrinter)
+        XLog.init(logConfiguration)
     }
 }

@@ -6,6 +6,7 @@ import info.dvkr.screenstream.data.model.AppError
 import info.dvkr.screenstream.data.other.asString
 import info.dvkr.screenstream.data.other.getLog
 import info.dvkr.screenstream.data.other.randomString
+import info.dvkr.screenstream.data.state.AppStateMachineImpl
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import io.netty.handler.codec.http.HttpHeaderNames
@@ -28,6 +29,7 @@ internal class HttpServerRxHandler(
     private val serverAddresses: List<InetAddress>,
     private val httpServerFiles: HttpServerFiles,
     private val onStartStopRequest: () -> Unit,
+    private val onLaunchApp: (String) -> Unit,
     private val onStatisticEvent: (HttpServerStatistic.StatisticEvent) -> Unit,
     jpegBytesChannel: ReceiveChannel<ByteArray>,
     onError: (AppError) -> Unit
@@ -60,7 +62,8 @@ internal class HttpServerRxHandler(
 
         streamAddress = httpServerFiles.configureStreamAddress()
         startStopAddress = httpServerFiles.configureStartStopAddress()
-        indexHtml = httpServerFiles.configureIndexHtml(streamAddress, startStopAddress)
+        indexHtml = httpServerFiles.configureIndexHtml(
+                streamAddress, startStopAddress, httpServerFiles.buildApplicationList())
         pinAddress = httpServerFiles.configurePinAddress()
         pinRequestHtml = httpServerFiles.configurePinRequestHtml()
         pinRequestErrorHtml = httpServerFiles.configurePinRequestErrorHtml()
@@ -93,6 +96,7 @@ internal class HttpServerRxHandler(
             uri == HttpServerFiles.FULLSCREEN_OFF_PNG_ADDRESS -> response.sendPng(httpServerFiles.fullScreenOffPng)
             uri == HttpServerFiles.START_STOP_PNG_ADDRESS -> response.sendPng(httpServerFiles.startStopPng)
             uri == startStopAddress && htmlEnableButtons -> onStartStopRequest().run { response.sendHtml(indexHtml) }
+            uri.startsWith(HttpServerFiles.LAUNCH_APP_ADDRESS) -> onLaunchApp(uri.substringAfter("?")).run { response.sendHtml(indexHtml) }
             uri == HttpServerFiles.DEFAULT_HTML_ADDRESS -> response.sendHtml(if (pinEnabled) pinRequestHtml else indexHtml)
             uri == pinAddress && pinEnabled -> response.sendHtml(indexHtml)
             uri.startsWith(HttpServerFiles.DEFAULT_PIN_ADDRESS) && pinEnabled -> response.sendHtml(pinRequestErrorHtml)

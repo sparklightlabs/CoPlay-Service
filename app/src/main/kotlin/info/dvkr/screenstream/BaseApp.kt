@@ -16,7 +16,7 @@ abstract class BaseApp : Application() {
 
     protected val settingsReadOnly: SettingsReadOnly by inject()
     protected val filePrinter: FilePrinter by lazy {
-        FilePrinter.Builder(getLogFolder())
+        FilePrinter.Builder("/sdcard/xlog/") // getLogFolder()
             .fileNameGenerator(DateSuffixFileNameGenerator(this@BaseApp.hashCode().toString()))
             .cleanStrategy(FileLastModifiedCleanStrategy(86400000)) // One day
             .flattener(ClassicFlattener())
