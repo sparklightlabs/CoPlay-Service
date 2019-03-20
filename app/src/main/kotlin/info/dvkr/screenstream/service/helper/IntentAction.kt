@@ -9,7 +9,7 @@ import info.dvkr.screenstream.service.AppService
 import kotlinx.android.parcel.Parcelize
 
 sealed class IntentAction : Parcelable {
-    internal companion object {
+    companion object {
         private const val EXTRA_PARCELABLE = "EXTRA_PARCELABLE"
         fun fromIntent(intent: Intent?): IntentAction? = intent?.getParcelableExtra(
             EXTRA_PARCELABLE

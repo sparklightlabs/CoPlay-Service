@@ -1,12 +1,15 @@
-package info.dvkr.screenstream.ui.activity
+package com.sparklightlabs.custom
 
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.ServiceConnection
 import android.os.*
+import android.util.Log
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -40,7 +43,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun sendMessage(serviceMessage: ServiceMessage) {
-        XLog.d(getLog("sendMessage", "ServiceMessage: $serviceMessage"))
+        Log.d("sendMessage", "ServiceMessage: $serviceMessage");
         isBound || return
 
         try {
@@ -75,7 +78,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        XLog.d(getLog("onStart", "Invoked"))
+        Log.d("onStart", "Invoked")
 
         serviceMessagesHandler.getServiceMessageLiveData().observe(this, Observer<ServiceMessage> { message ->
             message?.let { onServiceMessage(it) }
@@ -87,7 +90,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        XLog.d(getLog("onStop", "Invoked"))
+        Log.d("onStop", "Invoked")
 
         if (isBound) {
             sendMessage(ServiceMessage.UnRegisterActivity(activityMessenger))
@@ -109,10 +112,19 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
+    fun startService() {
+        Log.d("startServive:", "Starting Service!")
+        IntentAction.StopStream.sendToAppService(this@BaseActivity)
+    }
+
+    fun stopService() {
+        Log.d("stopService:", "Stopping Service!")
+        IntentAction.StopStream.sendToAppService(this@BaseActivity)
+    }
+
     fun getServiceMessageLiveData() = serviceMessagesHandler.getServiceMessageLiveData()
 
     private fun setNightMode(@AppCompatDelegate.NightMode nightMode: Int) {
         AppCompatDelegate.setDefaultNightMode(nightMode)
-        delegate.setLocalNightMode(nightMode)
     }
 }

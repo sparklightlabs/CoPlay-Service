@@ -36,7 +36,7 @@ class AppService : Service(), CoroutineScope {
     companion object {
         fun getAppServiceIntent(context: Context): Intent =
             Intent(context.applicationContext, AppService::class.java)
-
+        @JvmStatic
         fun startForeground(context: Context, intent: Intent = getAppServiceIntent(context)) =
             ContextCompat.startForegroundService(context, intent)
     }
