@@ -102,6 +102,7 @@ class AppService : Service(), CoroutineScope {
     }
 
     @AnyThread
+    //Getting rid of restart so that no 2d UI is
     private fun onError(appError: AppError) {
         XLog.e(this@AppService.getLog("onError", "AppError: $appError"))
         IntentAction.StartAppActivity.sendToAppService(this)
@@ -204,6 +205,7 @@ class AppService : Service(), CoroutineScope {
             IntentAction.RecoverError ->
                 appStateMachine.sendEvent(AppStateMachine.Event.RecoverError)
 
+            /*
             IntentAction.StartAppActivity -> {
                 sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
                 if (isCastPermissionsPending)
@@ -211,6 +213,7 @@ class AppService : Service(), CoroutineScope {
                 else
                     startActivity(AppActivity.getStartIntent(this))
             }
+            */
 
             IntentAction.StartPermissionActivity -> {
                 sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
