@@ -17,12 +17,15 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         private const val FULLSCREEN_OFF_PNG = "fullscreen-off.png"
         private const val START_STOP_PNG = "start-stop.png"
 
+        private const val CSS_STYLESHEET = "styles.css"
+
         private const val INDEX_HTML = "index.html"
         private const val INDEX_HTML_BACKGROUND_COLOR = "BACKGROUND_COLOR"
         private const val INDEX_HTML_SCREEN_STREAM_ADDRESS = "SCREEN_STREAM_ADDRESS"
         private const val INDEX_HTML_START_STOP_ADDRESS = "START_STOP_ADDRESS"
         private const val INDEX_HTML_APPLICATION_LIST = "APPLICATION_LIST"
         private const val INDEX_HTML_ENABLE_BUTTONS = "ENABLE_BUTTONS"
+        private const val INDEX_HTML_CSS_STYLE= "CSS_STYLE"
 
         private const val PINREQUEST_HTML = "pinrequest.html"
         private const val PINREQUEST_HTML_STREAM_REQUIRE_PIN = "STREAM_REQUIRE_PIN"
@@ -55,6 +58,9 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
 
     private val baseIndexHtml =
         String(getFileFromAssets(applicationContext, INDEX_HTML), StandardCharsets.UTF_8)
+
+    private val baseStyleSheet =
+            String(getFileFromAssets(applicationContext, CSS_STYLESHEET), StandardCharsets.UTF_8)
 
     private val basePinRequestHtml =
         String(getFileFromAssets(applicationContext, PINREQUEST_HTML), StandardCharsets.UTF_8)
@@ -105,19 +111,22 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         if (enablePin) "/" + randomString(16)
         else HttpServerFiles.DEFAULT_START_STOP_ADDRESS
 
-    fun configureIndexHtml(streamAddress: String, startStopAddress: String, appList: String): String =
-        baseIndexHtml
-            .replaceFirst(
-                INDEX_HTML_ENABLE_BUTTONS.toRegex(),
-                htmlEnableButtons.toString()
-            )
-            .replaceFirst(
+    fun configureIndexHtml(streamAddress: String, startStopAddress: String, appList: String): String {
+        var newStyleSheet =
+            baseStyleSheet.replaceFirst(
                 INDEX_HTML_BACKGROUND_COLOR.toRegex(),
                 "#%06X".format(0xFFFFFF and htmlBackColor)
-            )
-            .replaceFirst(INDEX_HTML_SCREEN_STREAM_ADDRESS.toRegex(), streamAddress)
-            .replaceFirst(INDEX_HTML_START_STOP_ADDRESS.toRegex(), startStopAddress)
-                .replaceFirst(INDEX_HTML_APPLICATION_LIST.toRegex(),appList )
+        )
+        return baseIndexHtml
+                .replaceFirst(
+                        INDEX_HTML_ENABLE_BUTTONS.toRegex(),
+                        htmlEnableButtons.toString()
+                )
+                .replaceFirst(INDEX_HTML_CSS_STYLE.toRegex(), newStyleSheet)
+                .replaceFirst(INDEX_HTML_SCREEN_STREAM_ADDRESS.toRegex(), streamAddress)
+                .replaceFirst(INDEX_HTML_START_STOP_ADDRESS.toRegex(), startStopAddress)
+                .replaceFirst(INDEX_HTML_APPLICATION_LIST.toRegex(), appList)
+    }
 
     fun configurePinAddress(): String =
         if (enablePin) DEFAULT_PIN_ADDRESS + pin else DEFAULT_PIN_ADDRESS
