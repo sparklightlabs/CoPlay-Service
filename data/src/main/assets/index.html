@@ -14,8 +14,8 @@
         <input type="image" id="fullscreen" src="/fullscreen-on.png" onclick="toggleFullscreen()" />
         <input type="image" src="/start-stop.png" onclick="toggleStartStop()" />
     </div>
-    <div id="applications">
-    <li>APPLICATION_LIST</li>
+    <div id="slider">
+        <ul class="hs full">APPLICATION_LIST</ul>
 </div>
 <script>
         if ("undefined" != typeof history.pushState) { var o = { Title: "Screen Stream", Url: "/" }; history.pushState(o, o.Title, o.Url) }

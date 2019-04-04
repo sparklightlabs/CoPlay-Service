@@ -88,7 +88,7 @@ internal class HttpServerRxHandler(
         val uri = request.uri
         val clientAddress = response.unsafeConnection().channelPipeline.channel().remoteAddress() as InetSocketAddress
         XLog.d(getLog("handle", "Request to: ${localAddress.asString()}$uri from ${clientAddress.asString()}"))
-
+        // WOAH!!! I might have just figured it out...
         return when {
             uri == HttpServerFiles.ICON_PNG_ADDRESS -> response.sendPng(httpServerFiles.faviconPng)
             uri == HttpServerFiles.LOGO_PNG_ADDRESS -> response.sendPng(httpServerFiles.logoPng)

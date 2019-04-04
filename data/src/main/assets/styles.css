@@ -1,11 +1,16 @@
+:root {
+  --gutter: 20px;
+}
+
 body, html {
     width: 100%;
     height: 100%;
     margin: 0;
     border: 0;
     overflow: hidden;
-    display: block;
     font-family: sans-serif
+    display: grid;
+    place-items: center;
 }
 
 body {
@@ -13,13 +18,71 @@ body {
 }
 
 img {
-    display: block;
+    display: grid;
     margin-left: auto;
     margin-right: auto;
     height: 50%;
     width: 50%
     z-index: 9999;
 }
+
+.slider {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  padding: var(--gutter) 0;
+  display: grid;
+  grid-gap: var(--gutter) 0;
+  grid-template-columns: var(--gutter) 1fr var(--gutter);
+  align-content: start;
+}
+
+.slider > * {
+  grid-column: 2 / -2;
+}
+
+.slider > .full {
+  grid-column: 1 / -1;
+}
+
+.hs {
+  display: grid;
+  grid-gap: calc(var(--gutter) / 2);
+  grid-template-columns: 10px;
+  grid-template-rows: minmax(150px, 1fr);
+  grid-auto-flow: column;
+
+  overflow-x: scroll;
+  scroll-snap-type: x proximity;
+  padding-bottom: calc(.75 * var(--gutter));
+  margin-bottom: calc(-.25 * var(--gutter));
+}
+
+.hs:before,
+.hs:after {
+  content: '';
+  width: 10px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+h1,h2,h3 {
+  margin: 0;
+}
+
+.hs > li, .item {
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  border-radius: 8px;
+}
+
 
 #buttons  {
     top: 16px;
@@ -40,6 +103,26 @@ img {
 #fullSpanDiv {
     top: 16px;
     width: 100%;
+}
+
+.hs li a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.hs li a:hover {
+  text-decoration: none;
+  color: #000000;
+  background-color: #33B5E5;
+}
+
+li a{
+padding: calc(var(--gutter) / 2 * 1.2);
+display: inline;
+text-align:center;
+height:100%;
+width: 100%;
 }
 
 input {

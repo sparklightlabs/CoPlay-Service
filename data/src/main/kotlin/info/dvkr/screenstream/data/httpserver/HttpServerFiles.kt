@@ -1,6 +1,8 @@
 package info.dvkr.screenstream.data.httpserver
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.net.Uri
 import android.util.Log
 import com.elvishew.xlog.XLog
 import info.dvkr.screenstream.data.R
@@ -97,7 +99,10 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
     fun buildApplicationList(): String {
         var applicationList: String = ""
         this.applicationContext.packageManager.getInstalledApplications(0).forEach {
-            applicationList += "<a href = /launch-app?${it.packageName}>${it.packageName}</a><br>"
+            //var icon = this.applicationContext.packageManager.getApplicationIcon(it.packageName).
+            //applicationList += "<li class=\"item\"><img src = /app-icon?${it.packageName}>${this.applicationContext.packageManager.getApplicationLabel(it).toString()} </img> </li> <br>"
+            if ((it.flags and ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM)
+                applicationList += "<li class=\"item\"><a href = /launch-app?${it.packageName}>${this.applicationContext.packageManager.getApplicationLabel(it).toString()} </a> </li> <br>"
         }
 
         return applicationList
