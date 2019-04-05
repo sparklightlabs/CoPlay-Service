@@ -90,13 +90,14 @@ internal class HttpServerRxHandler(
         XLog.d(getLog("handle", "Request to: ${localAddress.asString()}$uri from ${clientAddress.asString()}"))
         // WOAH!!! I might have just figured it out...
         return when {
+            uri.startsWith(HttpServerFiles.APP_ICON_ADDRESS) -> response.sendPng(httpServerFiles.getAppIconPng(uri.substringAfter("?")))
             uri == HttpServerFiles.ICON_PNG_ADDRESS -> response.sendPng(httpServerFiles.faviconPng)
             uri == HttpServerFiles.LOGO_PNG_ADDRESS -> response.sendPng(httpServerFiles.logoPng)
             uri == HttpServerFiles.FULLSCREEN_ON_PNG_ADDRESS -> response.sendPng(httpServerFiles.fullScreenOnPng)
             uri == HttpServerFiles.FULLSCREEN_OFF_PNG_ADDRESS -> response.sendPng(httpServerFiles.fullScreenOffPng)
             uri == HttpServerFiles.START_STOP_PNG_ADDRESS -> response.sendPng(httpServerFiles.startStopPng)
             uri == startStopAddress && htmlEnableButtons -> onStartStopRequest().run { response.sendHtml(indexHtml) }
-            uri.startsWith(HttpServerFiles.LAUNCH_APP_ADDRESS) -> onLaunchApp(uri.substringAfter("?")).run { response.sendHtml(indexHtml) }
+            uri.startsWith(HttpServerFiles.LAUNCH_APP_ADDRESS) -> onLaunchApp(uri.substringAfter("?")).run { response.sendHtml(indexHtml) } // possible get rid of sending a response...
             uri == HttpServerFiles.DEFAULT_HTML_ADDRESS -> response.sendHtml(if (pinEnabled) pinRequestHtml else indexHtml)
             uri == pinAddress && pinEnabled -> response.sendHtml(indexHtml)
             uri.startsWith(HttpServerFiles.DEFAULT_PIN_ADDRESS) && pinEnabled -> response.sendHtml(pinRequestErrorHtml)
@@ -106,6 +107,7 @@ internal class HttpServerRxHandler(
     }
 
     private fun HttpServerResponse<ByteBuf>.sendPng(pngBytes: ByteArray): Observable<Void> {
+
         status = HttpResponseStatus.OK
         addHeader(HttpHeaderNames.CONTENT_TYPE, "image/png")
         setHeader(HttpHeaderNames.CACHE_CONTROL, "no-cache,no-store,max-age=0,must-revalidate")

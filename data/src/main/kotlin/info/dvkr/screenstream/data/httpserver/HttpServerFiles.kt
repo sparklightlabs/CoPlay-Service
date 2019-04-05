@@ -2,6 +2,9 @@ package info.dvkr.screenstream.data.httpserver
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
 import com.elvishew.xlog.XLog
@@ -9,6 +12,7 @@ import info.dvkr.screenstream.data.R
 import info.dvkr.screenstream.data.other.getLog
 import info.dvkr.screenstream.data.other.randomString
 import info.dvkr.screenstream.data.settings.SettingsReadOnly
+import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
 
 class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsReadOnly) {
@@ -48,12 +52,14 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         const val START_STOP_PNG_ADDRESS = "/start-stop.png"
 
         const val LAUNCH_APP_ADDRESS = "/launch-app"
+        const val APP_ICON_ADDRESS = "/app-icon"
     }
 
     private val applicationContext: Context = context.applicationContext
 
     val faviconPng = getFileFromAssets(applicationContext, FAVICON_PNG)
     val logoPng = getFileFromAssets(applicationContext, LOGO_PNG)
+    val applicationIconMap : MutableMap<String, ByteArray> = mutableMapOf();
     val fullScreenOnPng = getFileFromAssets(applicationContext, FULLSCREEN_ON_PNG)
     val fullScreenOffPng = getFileFromAssets(applicationContext, FULLSCREEN_OFF_PNG)
     val startStopPng = getFileFromAssets(applicationContext, START_STOP_PNG)
@@ -100,12 +106,38 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         var applicationList: String = ""
         this.applicationContext.packageManager.getInstalledApplications(0).forEach {
             //var icon = this.applicationContext.packageManager.getApplicationIcon(it.packageName).
-            //applicationList += "<li class=\"item\"><img src = /app-icon?${it.packageName}>${this.applicationContext.packageManager.getApplicationLabel(it).toString()} </img> </li> <br>"
+            applicationIconMap.put(it.packageName, getAppIconFromDrawable(it.packageName))
             if ((it.flags and ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM)
-                applicationList += "<li class=\"item\"><a href = /launch-app?${it.packageName}>${this.applicationContext.packageManager.getApplicationLabel(it).toString()} </a> </li> <br>"
+                applicationList +=
+                    "<li class=\"item\">" +
+                            "<a href = /launch-app?${it.packageName}>" +
+                            "<img class=\"imageItem\" src = /app-icon?${it.packageName}>" +
+                            "${this.applicationContext.packageManager.getApplicationLabel(it).toString()}" +
+                            "</img>" +
+                            "</a>" +
+                    "</li>"
         }
-
         return applicationList
+    }
+
+    // Gets app Icon and returns it in PNG ByteArray
+    private fun getAppIconFromDrawable(packageName: String): ByteArray {
+        var drawable : Drawable = this.applicationContext.packageManager.getApplicationIcon(packageName)
+        var bitmap : Bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        var canvas : Canvas = Canvas(bitmap);
+        drawable.setBounds(0,0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+        drawable.draw(canvas)
+        var os : ByteArrayOutputStream = ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, os)
+        return os.toByteArray()
+    }
+
+    // Returns an Empty array if not found
+    fun getAppIconPng(packageName: String): ByteArray {
+        return if (applicationIconMap.get(packageName) != null)
+            applicationIconMap.get(packageName) as ByteArray
+        else
+            ByteArray(0)
     }
 
     fun configureStreamAddress(): String =

@@ -17,13 +17,18 @@ body {
     background: BACKGROUND_COLOR
 }
 
-img {
+.video {
     display: grid;
     margin-left: auto;
     margin-right: auto;
     height: 50%;
     width: 50%
     z-index: 9999;
+}
+
+.imageItem {
+    height: 175px;
+    width: 175px;
 }
 
 .slider {
@@ -33,7 +38,7 @@ img {
   padding: var(--gutter) 0;
   display: grid;
   grid-gap: var(--gutter) 0;
-  grid-template-columns: var(--gutter) 1fr var(--gutter);
+  grid-template-columns: var(--gutter) 200px var(--gutter);
   align-content: start;
 }
 
@@ -49,7 +54,7 @@ img {
   display: grid;
   grid-gap: calc(var(--gutter) / 2);
   grid-template-columns: 10px;
-  grid-template-rows: minmax(150px, 1fr);
+  grid-template-rows: 225px;
   grid-auto-flow: column;
 
   overflow-x: scroll;
