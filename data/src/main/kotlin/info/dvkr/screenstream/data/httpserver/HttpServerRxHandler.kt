@@ -37,6 +37,7 @@ internal class HttpServerRxHandler(
 
     private val indexHtml: String
     private val streamAddress: String
+    private val appLaunchAddress: String
     private val startStopAddress: String
     private val htmlEnableButtons: Boolean
     private val pinEnabled: Boolean
@@ -62,8 +63,9 @@ internal class HttpServerRxHandler(
 
         streamAddress = httpServerFiles.configureStreamAddress()
         startStopAddress = httpServerFiles.configureStartStopAddress()
+        appLaunchAddress = httpServerFiles.configureAppLaunchAddress()
         indexHtml = httpServerFiles.configureIndexHtml(
-                streamAddress, startStopAddress, httpServerFiles.buildApplicationList())
+                streamAddress, startStopAddress, appLaunchAddress)
         pinAddress = httpServerFiles.configurePinAddress()
         pinRequestHtml = httpServerFiles.configurePinRequestHtml()
         pinRequestErrorHtml = httpServerFiles.configurePinRequestErrorHtml()
@@ -97,7 +99,7 @@ internal class HttpServerRxHandler(
             uri == HttpServerFiles.FULLSCREEN_OFF_PNG_ADDRESS -> response.sendPng(httpServerFiles.fullScreenOffPng)
             uri == HttpServerFiles.START_STOP_PNG_ADDRESS -> response.sendPng(httpServerFiles.startStopPng)
             uri == startStopAddress && htmlEnableButtons -> onStartStopRequest().run { response.sendHtml(indexHtml) }
-            uri.startsWith(HttpServerFiles.LAUNCH_APP_ADDRESS) -> onLaunchApp(uri.substringAfter("?")).run { response.sendHtml(indexHtml) } // possible get rid of sending a response...
+            uri.startsWith(appLaunchAddress) -> onLaunchApp(uri.substringAfter("?")).run {response.sendHtml(indexHtml) } // possible get rid of sending a response...
             uri == HttpServerFiles.DEFAULT_HTML_ADDRESS -> response.sendHtml(if (pinEnabled) pinRequestHtml else indexHtml)
             uri == pinAddress && pinEnabled -> response.sendHtml(indexHtml)
             uri.startsWith(HttpServerFiles.DEFAULT_PIN_ADDRESS) && pinEnabled -> response.sendHtml(pinRequestErrorHtml)

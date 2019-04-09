@@ -32,6 +32,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         private const val INDEX_HTML_APPLICATION_LIST = "APPLICATION_LIST"
         private const val INDEX_HTML_ENABLE_BUTTONS = "ENABLE_BUTTONS"
         private const val INDEX_HTML_CSS_STYLE= "CSS_STYLE"
+        private const val INDEX_HTML_LAUNCH_APP_ADDRESS = "LAUNCH_ADDRESS"
 
         private const val PINREQUEST_HTML = "pinrequest.html"
         private const val PINREQUEST_HTML_STREAM_REQUIRE_PIN = "STREAM_REQUIRE_PIN"
@@ -42,6 +43,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
 
         const val DEFAULT_HTML_ADDRESS = "/"
         private const val DEFAULT_STREAM_ADDRESS = "/stream.mjpeg"
+        const val DEFAULT_LAUNCH_APP_ADDRESS = "/launch-app"
         private const val DEFAULT_START_STOP_ADDRESS = "/start-stop"
         const val DEFAULT_PIN_ADDRESS = "/?pin="
 
@@ -102,7 +104,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         return Pair(htmlEnableButtons, enablePin)
     }
 
-    fun buildApplicationList(): String {
+    fun buildApplicationList(address: String): String {
         var applicationList: String = ""
         this.applicationContext.packageManager.getInstalledApplications(0).forEach {
             //var icon = this.applicationContext.packageManager.getApplicationIcon(it.packageName).
@@ -110,7 +112,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
             if ((it.flags and ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM)
                 applicationList +=
                     "<li class=\"item\">" +
-                            "<a href = /launch-app?${it.packageName}>" +
+                            "<a href = $address?${it.packageName}>" +
                             "<img class=\"imageItem\" src = /app-icon?${it.packageName}>" +
                             "${this.applicationContext.packageManager.getApplicationLabel(it).toString()}" +
                             "</img>" +
@@ -148,12 +150,17 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         if (enablePin) "/" + randomString(16)
         else HttpServerFiles.DEFAULT_START_STOP_ADDRESS
 
-    fun configureIndexHtml(streamAddress: String, startStopAddress: String, appList: String): String {
+    fun configureAppLaunchAddress(): String =
+        if (enablePin) "/" + randomString(16)
+        else HttpServerFiles.DEFAULT_LAUNCH_APP_ADDRESS
+
+    fun configureIndexHtml(streamAddress: String, startStopAddress: String, appLaunchAddress: String): String {
         var newStyleSheet =
             baseStyleSheet.replaceFirst(
                 INDEX_HTML_BACKGROUND_COLOR.toRegex(),
                 "#%06X".format(0xFFFFFF and htmlBackColor)
         )
+        var appList = buildApplicationList(appLaunchAddress)
         return baseIndexHtml
                 .replaceFirst(
                         INDEX_HTML_ENABLE_BUTTONS.toRegex(),
