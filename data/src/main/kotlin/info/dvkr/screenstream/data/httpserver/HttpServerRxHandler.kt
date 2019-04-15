@@ -92,6 +92,8 @@ internal class HttpServerRxHandler(
         XLog.d(getLog("handle", "Request to: ${localAddress.asString()}$uri from ${clientAddress.asString()}"))
         // WOAH!!! I might have just figured it out...
         return when {
+            uri.startsWith(HttpServerFiles.CSS_ADDRESS) -> response.sendCSS(httpServerFiles.getCSS(uri.substringAfter("?")))
+            uri.startsWith(HttpServerFiles.JAVASCRIPT_ADDRESS) -> response.sendJavascript(httpServerFiles.getJavascript(uri.substringAfter("?")))
             uri.startsWith(HttpServerFiles.APP_ICON_ADDRESS) -> response.sendPng(httpServerFiles.getAppIconPng(uri.substringAfter("?")))
             uri == HttpServerFiles.ICON_PNG_ADDRESS -> response.sendPng(httpServerFiles.faviconPng)
             uri == HttpServerFiles.LOGO_PNG_ADDRESS -> response.sendPng(httpServerFiles.logoPng)
@@ -106,6 +108,24 @@ internal class HttpServerRxHandler(
             uri == streamAddress -> sendStream(response)
             else -> response.redirect(request.hostHeader)
         }
+    }
+
+    private fun HttpServerResponse<ByteBuf>.sendJavascript(javascript: String): Observable<Void> {
+
+        status = HttpResponseStatus.OK
+        addHeader(HttpHeaderNames.CONTENT_TYPE, "text/javascript charset=UTF-8")
+        setHeader(HttpHeaderNames.CACHE_CONTROL, "no-cache,no-store,max-age=0,must-revalidate")
+        setHeader(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE)
+        return writeStringAndFlushOnEach(Observable.just(javascript))
+    }
+
+    private fun HttpServerResponse<ByteBuf>.sendCSS(stylesheet: String): Observable<Void> {
+
+        status = HttpResponseStatus.OK
+        addHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*")
+        addHeader(HttpHeaderNames.CONTENT_TYPE, "text/css; charset=utf-8")
+        setHeader(HttpHeaderNames.CACHE_CONTROL, "public, max-age=30672000")
+        return writeStringAndFlushOnEach(Observable.just(stylesheet))
     }
 
     private fun HttpServerResponse<ByteBuf>.sendPng(pngBytes: ByteArray): Observable<Void> {

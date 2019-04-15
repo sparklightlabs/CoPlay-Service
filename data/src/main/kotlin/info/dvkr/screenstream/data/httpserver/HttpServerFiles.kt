@@ -24,6 +24,10 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         private const val START_STOP_PNG = "start-stop.png"
 
         private const val CSS_STYLESHEET = "styles.css"
+        private const val JQUERY_JAVASCRIPT = "jquery-3.3.1.slim.min.js"
+        private const val POPPER_JAVASCRIPT = "popper.min.js"
+        private const val BOOTSTRAP_JAVASCRIPT = "bootstrap.min.js"
+        private const val BOOTSTRAP_CSS = "bootstrap.min.css"
 
         private const val INDEX_HTML = "index.html"
         private const val INDEX_HTML_BACKGROUND_COLOR = "BACKGROUND_COLOR"
@@ -32,7 +36,6 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         private const val INDEX_HTML_APPLICATION_LIST = "APPLICATION_LIST"
         private const val INDEX_HTML_ENABLE_BUTTONS = "ENABLE_BUTTONS"
         private const val INDEX_HTML_CSS_STYLE= "CSS_STYLE"
-        private const val INDEX_HTML_LAUNCH_APP_ADDRESS = "LAUNCH_ADDRESS"
 
         private const val PINREQUEST_HTML = "pinrequest.html"
         private const val PINREQUEST_HTML_STREAM_REQUIRE_PIN = "STREAM_REQUIRE_PIN"
@@ -53,8 +56,9 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         const val FULLSCREEN_OFF_PNG_ADDRESS = "/fullscreen-off.png"
         const val START_STOP_PNG_ADDRESS = "/start-stop.png"
 
-        const val LAUNCH_APP_ADDRESS = "/launch-app"
         const val APP_ICON_ADDRESS = "/app-icon"
+        const val JAVASCRIPT_ADDRESS = "/js"
+            const val CSS_ADDRESS = "/css"
     }
 
     private val applicationContext: Context = context.applicationContext
@@ -71,6 +75,18 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
 
     private val baseStyleSheet =
             String(getFileFromAssets(applicationContext, CSS_STYLESHEET), StandardCharsets.UTF_8)
+
+    private val jquery=
+            String(getFileFromAssets(applicationContext, JQUERY_JAVASCRIPT), StandardCharsets.UTF_8)
+
+    private val popper =
+            String(getFileFromAssets(applicationContext, POPPER_JAVASCRIPT), StandardCharsets.UTF_8)
+
+    private val bootstrapJS =
+            String(getFileFromAssets(applicationContext, BOOTSTRAP_JAVASCRIPT), StandardCharsets.UTF_8)
+
+    private val bootstrapCSS =
+            String(getFileFromAssets(applicationContext, BOOTSTRAP_CSS), StandardCharsets.UTF_8)
 
     private val basePinRequestHtml =
         String(getFileFromAssets(applicationContext, PINREQUEST_HTML), StandardCharsets.UTF_8)
@@ -111,13 +127,32 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
             applicationIconMap.put(it.packageName, getAppIconFromDrawable(it.packageName))
             if ((it.flags and ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM)
                 applicationList +=
-                    "<li class=\"item\">" +
-                            "<a href = $address?${it.packageName}>" +
-                            "<img class=\"imageItem\" src = /app-icon?${it.packageName}>" +
-                            "${this.applicationContext.packageManager.getApplicationLabel(it).toString()}" +
-                            "</img>" +
-                            "</a>" +
-                    "</li>"
+                    "<div class=\"w-100 py-1 px-1\">" +
+                        "<div class=\"card appCard\">" +
+                            "<div class=\"row no-gutters\">" +
+                                "<div class=\"appIcon\" align=\"center\">" +
+                                    "<img src=/app-icon?${it.packageName} class=\"card-img\" style=\"height: 125px;\">" +
+                                "</div>" +
+                                "<div class=\"appDescription\">" +
+                                    "<div class=\"h-50 py-2 px-1\">" +
+                                        "<h5>${this.applicationContext.packageManager.getApplicationLabel(it).toString()}</h5>" +
+                                    "</div>" +
+                                    "<div class =\"h-50\">" +
+                                        "<div class=\"row h-100\">" +
+                                            "<div class=\"col-md-12 h-100 center-block\">" +
+                                                "<div class=\" float-left py-1 px-1\">" +
+                                                    "<a href=\"#\" class=\"appButton btn btn-primary\">Options</a>" +
+                                                "</div>" +
+                                            "<div class=\"float-left py-1 px-1\">" +
+                                                "<a href=$address?${it.packageName} class=\"appButton btn btn-primary\">Play</a>" +
+                                            "</div>" +
+                                        "</div>" +
+                                    "</div>" +
+                                "</div>" +
+                            "</div>" +
+                         "</div>" +
+                        "</div>" +
+                    "</div>"
         }
         return applicationList
     }
@@ -140,6 +175,15 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
             applicationIconMap.get(packageName) as ByteArray
         else
             ByteArray(0)
+    }
+
+    fun getJavascript(scriptName: String): String {
+        when (scriptName) {
+            JQUERY_JAVASCRIPT -> return jquery
+            POPPER_JAVASCRIPT -> return popper
+            BOOTSTRAP_JAVASCRIPT -> return bootstrapJS
+        }
+        return ""
     }
 
     fun configureStreamAddress(): String =
@@ -199,5 +243,12 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
             fileBytes.isNotEmpty() || throw IllegalStateException("$fileName is empty")
             return fileBytes
         }
+    }
+
+    fun getCSS(stylesheet: String): String {
+        when (stylesheet) {
+            BOOTSTRAP_CSS -> return bootstrapCSS
+        }
+        return ""
     }
 }
