@@ -52,17 +52,22 @@ androidExtensions { experimental = true }
 kapt { useBuildCache = true }
 
 dependencies {
-    implementation "org.jetbrains:annotations:$jetbrainsAnnotations"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-    implementation "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$kotlinVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
-    implementation "androidx.annotation:annotation:$androidxAnnotation"
-    implementation "androidx.core:core:$androidxCore"
-    implementation "io.reactivex:rxjava:$rxJava"
-    implementation "com.jakewharton.rxrelay:rxrelay:$rxRelay"
-    implementation "io.netty:netty-codec-http:$netty"
-    implementation "io.netty:netty-handler:$netty"
-    implementation "io.reactivex:rxnetty-http:$rxNetty"
-    implementation "com.github.iamironz:binaryprefs:$binaryprefs"
-    implementation "com.elvishew:xlog:$xlog"
+    implementation("org.jetbrains:annotations:$jetbrainsAnnotations")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-android-extensions-runtime:$kotlinVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
+
+    implementation("androidx.annotation:annotation:$androidxAnnotation")
+    implementation("androidx.core:core:$androidxCore")
+
+    implementation("io.reactivex:rxjava:$rxJava")
+    implementation("com.jakewharton.rxrelay:rxrelay:$rxRelay")
+
+    implementation("io.netty:netty-codec-http:$netty")
+    implementation("io.netty:netty-handler:$netty")
+    implementation("io.reactivex:rxnetty-common:$rxNetty")
+    implementation("io.reactivex:rxnetty-http:$rxNetty")
+
+    implementation("com.github.iamironz:binaryprefs:$binaryprefs")
+    implementation("com.elvishew:xlog:$xlog")
 }

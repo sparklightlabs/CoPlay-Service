@@ -13,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -26,7 +28,6 @@ import com.afollestad.materialdialogs.input.getInputField
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.elvishew.xlog.XLog
-import com.google.android.material.textfield.TextInputEditText
 import info.dvkr.screenstream.R
 import info.dvkr.screenstream.data.other.getLog
 import info.dvkr.screenstream.data.settings.Settings
@@ -199,6 +200,7 @@ class SettingsFragment : Fragment() {
             }
         }
 
+
         // Image - Resize factor
         tv_fragment_settings_resize_image_value.text = getString(R.string.pref_resize_value, settings.resizeFactor)
         val resizePictureSizeString = getString(R.string.pref_resize_dialog_result)
@@ -209,10 +211,10 @@ class SettingsFragment : Fragment() {
                 .icon(R.drawable.ic_settings_resize_24dp)
                 .customView(R.layout.dialog_settings_resize)
                 .positiveButton(android.R.string.ok) { dialog ->
-                    val tietView =
-                        dialog.getCustomView().findViewById<TextInputEditText>(R.id.tiet_dialog_settings_resize)
-                    val newValue = tietView?.text?.toString()?.toInt() ?: settings.resizeFactor
-                    if (settings.resizeFactor != newValue) settings.resizeFactor = newValue
+                    dialog.getCustomView().apply DialogView@{
+                        val newResizeFactor = tiet_dialog_settings_resize.text.toString().toInt()
+                        if (newResizeFactor != settings.resizeFactor) settings.resizeFactor = newResizeFactor
+                    }
                 }
                 .negativeButton(android.R.string.cancel)
                 .apply Dialog@{
@@ -433,6 +435,42 @@ class SettingsFragment : Fragment() {
         materialDialog?.dismiss()
         materialDialog = null
         super.onStop()
+    }
+
+    private fun validateCropValues(
+        dialog: MaterialDialog,
+        topView: EditText,
+        bottomView: EditText,
+        leftView: EditText,
+        rightView: EditText,
+        errorView: TextView
+    ) {
+        val topCrop = topView.text.let { if (it.isNullOrBlank()) -1 else it.toString().toInt() }
+        val bottomCrop = bottomView.text.let { if (it.isNullOrBlank()) -1 else it.toString().toInt() }
+        val leftCrop = leftView.text.let { if (it.isNullOrBlank()) -1 else it.toString().toInt() }
+        val rightCrop = rightView.text.let { if (it.isNullOrBlank()) -1 else it.toString().toInt() }
+
+        val isTopBottomValid = (topCrop + bottomCrop) < screenSize.y
+        val isLeftRightValid = (leftCrop + rightCrop) < screenSize.x
+
+        if (isTopBottomValid && isLeftRightValid) {
+            if (topCrop >= 0 && bottomCrop >= 0 && leftCrop >= 0 && rightCrop >= 0) {
+                dialog.setActionButtonEnabled(WhichButton.POSITIVE, true)
+                errorView.visibility = View.GONE
+            } else {
+                dialog.setActionButtonEnabled(WhichButton.POSITIVE, false)
+                errorView.text = getString(R.string.pref_crop_dialog_error_message)
+                errorView.visibility = View.VISIBLE
+            }
+        } else {
+            dialog.setActionButtonEnabled(WhichButton.POSITIVE, false)
+            if (isTopBottomValid.not()) {
+                errorView.text = getString(R.string.pref_crop_dialog_error_message_top_bottom, screenSize.y)
+            } else {
+                errorView.text = getString(R.string.pref_crop_dialog_error_message_left_right, screenSize.x)
+            }
+            errorView.visibility = View.VISIBLE
+        }
     }
 
     private fun canEnableSetPin(): Boolean =
