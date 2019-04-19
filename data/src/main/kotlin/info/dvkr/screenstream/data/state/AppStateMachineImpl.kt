@@ -321,7 +321,7 @@ class AppStateMachineImpl(
         )
     }
 
-    // We never get here...
+
     private fun launchApp(streamState: StreamState, packageName: String) : StreamState {
         Log.d("launchApp", "Invoked")
         try {

@@ -23,6 +23,12 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         private const val FULLSCREEN_OFF_PNG = "fullscreen-off.png"
         private const val START_STOP_PNG = "start-stop.png"
 
+        private const val PAUSE_PNG = "pause.png"
+        private const val PLAY_PNG = "play.png"
+        private const val HOME_PNG = "home.png"
+        private const val BACK_PNG = "back.png"
+        private const val MENU_PNG = "menu.png"
+
         private const val CSS_STYLESHEET = "styles.css"
         private const val JQUERY_JAVASCRIPT = "jquery-3.3.1.slim.min.js"
         private const val POPPER_JAVASCRIPT = "popper.min.js"
@@ -57,6 +63,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         const val START_STOP_PNG_ADDRESS = "/start-stop.png"
 
         const val APP_ICON_ADDRESS = "/app-icon"
+        const val UI_ICON_ADDRESS = "/icons"
         const val JAVASCRIPT_ADDRESS = "/js"
             const val CSS_ADDRESS = "/css"
     }
@@ -68,7 +75,11 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
     val applicationIconMap : MutableMap<String, ByteArray> = mutableMapOf();
     val fullScreenOnPng = getFileFromAssets(applicationContext, FULLSCREEN_ON_PNG)
     val fullScreenOffPng = getFileFromAssets(applicationContext, FULLSCREEN_OFF_PNG)
-    val startStopPng = getFileFromAssets(applicationContext, START_STOP_PNG)
+    val pausePng = getFileFromAssets(applicationContext, PAUSE_PNG)
+    val playPng = getFileFromAssets(applicationContext, PLAY_PNG)
+    val menuPng = getFileFromAssets(applicationContext, MENU_PNG)
+    val homePng = getFileFromAssets(applicationContext, HOME_PNG)
+    val backPng = getFileFromAssets(applicationContext, BACK_PNG)
 
     private val baseIndexHtml =
         String(getFileFromAssets(applicationContext, INDEX_HTML), StandardCharsets.UTF_8)
@@ -127,32 +138,26 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
             applicationIconMap.put(it.packageName, getAppIconFromDrawable(it.packageName))
             if ((it.flags and ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM)
                 applicationList +=
-                    "<div class=\"w-100 py-1 px-1\">" +
-                        "<div class=\"card appCard\">" +
-                            "<div class=\"row no-gutters\">" +
-                                "<div class=\"appIcon\" align=\"center\">" +
-                                    "<img src=/app-icon?${it.packageName} class=\"card-img\" style=\"height: 125px;\">" +
-                                "</div>" +
-                                "<div class=\"appDescription\">" +
-                                    "<div class=\"h-50 py-2 px-1\">" +
-                                        "<h5>${this.applicationContext.packageManager.getApplicationLabel(it).toString()}</h5>" +
-                                    "</div>" +
-                                    "<div class =\"h-50\">" +
-                                        "<div class=\"row h-100\">" +
-                                            "<div class=\"col-md-12 h-100 center-block\">" +
-                                                "<div class=\" float-left py-1 px-1\">" +
-                                                    "<a href=\"#\" class=\"appButton btn btn-primary\">Options</a>" +
-                                                "</div>" +
-                                            "<div class=\"float-left py-1 px-1\">" +
-                                                "<a href=$address?${it.packageName} class=\"appButton btn btn-primary\">Play</a>" +
-                                            "</div>" +
-                                        "</div>" +
-                                    "</div>" +
-                                "</div>" +
-                            "</div>" +
-                         "</div>" +
-                        "</div>" +
-                    "</div>"
+            "<a href=$address?${it.packageName} class=\"container-fluid float-left px-4\">" +
+                "<div class=\"row\">" +
+                    "<div>" +
+                        "<div class=\"appIcon\">Icon</div>" +
+                    "</div>" +
+                    "<div class=\"appDescription\">" +
+                        "<div class=\"row no-gutters px-1 fixOverflow\"  style=\"max-height: 66%;\">" +
+                            "<div class=\"fixOverflow\">" +
+                                "<h5 class=\"card-title\" style=\"font-size: 1.15rem;\">${this.applicationContext.packageManager.getApplicationLabel(it).toString()}</h5>"+
+                            "</div>"+
+                        "</div>"+
+                        "<div class=\"row no-gutters px-1 py-1\" style=\"height:  33%;\">"    +
+                            "<h6 class=\"card-subtitle mb-2 text-muted\" style=\"font-size: .9rem;\">Card subtitle</h6>" +
+                       " </div>"+
+                    "</div>"+
+                "</div>"+
+            "</a>";
+
+
+
         }
         return applicationList
     }
@@ -175,6 +180,17 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
             applicationIconMap.get(packageName) as ByteArray
         else
             ByteArray(0)
+    }
+
+    fun getUIIconPng(name: String): ByteArray {
+        when (name) {
+            HOME_PNG -> return homePng
+            BACK_PNG -> return backPng
+            MENU_PNG -> return menuPng
+            PLAY_PNG -> return playPng
+            PAUSE_PNG -> return pausePng
+        }
+        return ByteArray(0);
     }
 
     fun getJavascript(scriptName: String): String {

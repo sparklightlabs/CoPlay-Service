@@ -1,66 +1,20 @@
-    @media only screen and (min-width : 1200px) {
-        .container { max-width: 1020px; }
-    }
-
-    @media only screen and (min-width : 1200px) {
-        .container { max-width: 1020px; }
-    }
-
     @media only screen and (max-width : 575.9px) {
-        #vf { height: 33vh;
-              background: red;
-            }
-        #af { height: calc(100vh - 33vh - 55px);}
-        .card-img {
-          width: auto;
-          border-radius: calc(.25rem - 1px);
-          height: 15vh;
-        }
+      .videoFrame {
+        height: calc(36vh - 50px);
+      }
+
     }
 
     @media only screen and (min-width : 576px) {
-        #vf { height: calc(100vh - 55px);
-              background: red;}
-        #af {height: calc(100vh - 55px)}
-        .appButton {font-size: 10px;}
+      .videoFrame {
+        height: calc(66vh - 50px);
+      }
+
     }
 
-    @media only screen and (min-width : 751px) {
-      .appButton {font-size: 15px;}
-    }
-
-    #af {
-      overflow-y: scroll;
-      overflow-x: hidden;
-    }
-    .appIcon {
-      height: auto;
-      width: 33%;
-    }
-    .appCard {
-        max-height: 125px;
-        width: 100%
-    }
-    .appDescription {
-        width: 66%;
-        height: inherit;
-    }
-    .overlap {
-      position: fixed;
-      width: 100%;
-      opacity: 1;
-      z-index: 2;
-      text-align: center;
-    }
-    .overlay {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      opacity: 0.0;
-    }
     .myNavbar {
       position: relative;
-      height: 55px;
+      height: 50px;
       display: -ms-flexbox;
       display: flex;
       -ms-flex-wrap: wrap;
@@ -75,7 +29,64 @@
       padding-bottom: 0.5rem;
       padding-left: 1rem;
     }
-    .appButton {
-      display: inline;
-      vertical-align: top;
+
+    .videoFrame {
+      width:  100%;
+      background: #f8f9fa;
+    }
+
+    .selectedApp {
+      height: calc(30vh - 50px);
+      min-height: 160px;
+      width: 100%;
+    }
+    .overlap {
+      position: absolute;
+      opacity: 1;
+      z-index: 2;
+      text-align: center;
+    }
+    .appIcon {
+      height: 94px;
+      width:  168px;
+      margin-left: 0px;
+      margin-right: 0px;
+      background: #f8f9fa;
+    }
+    .appDescription {
+      width: calc(100% - 168px);
+      height: 98px;
+    }
+    .fixOverflow {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .gd {
+    color: var(--gray-dark);
+    }
+
+    a:hover {
+      background-color: #f8f9fa;
+      text-decoration: none  !important;
+    }
+    .selectedAppBorder {
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+    }
+    a {
+      color: unset;
+    }
+    .actionsCard {
+      background: #f8f9fa;
+      margin-bottom: .25rem;
+      margin-top: -.25rem;
+    }
+    .playPause {
+      margin-top: 5px;
+      height: 16px;
+      width: 16px;
+    }
+    .uiIcon{
+      height: 24px;
+      width: 24px;
     }
