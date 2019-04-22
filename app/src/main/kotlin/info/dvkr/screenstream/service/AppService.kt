@@ -149,6 +149,7 @@ class AppService : Service(), CoroutineScope {
             this,
             supervisorJob,
             settings as SettingsReadOnly,
+            settings,
             BitmapFactory.decodeResource(resources, R.drawable.logo),
             { clients: List<HttpClient>, trafficHistory: List<TrafficPoint> ->
                 if (settings.notifySlowConnections) checkForSlowClients(clients)

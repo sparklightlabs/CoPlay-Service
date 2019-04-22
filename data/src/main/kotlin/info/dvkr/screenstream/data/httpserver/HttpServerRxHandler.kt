@@ -6,7 +6,6 @@ import info.dvkr.screenstream.data.model.AppError
 import info.dvkr.screenstream.data.other.asString
 import info.dvkr.screenstream.data.other.getLog
 import info.dvkr.screenstream.data.other.randomString
-import info.dvkr.screenstream.data.state.AppStateMachineImpl
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import io.netty.handler.codec.http.HttpHeaderNames
@@ -26,19 +25,19 @@ import java.net.InetAddress
 import java.net.InetSocketAddress
 
 internal class HttpServerRxHandler(
-    private val serverAddresses: List<InetAddress>,
-    private val httpServerFiles: HttpServerFiles,
-    private val onStartStopRequest: () -> Unit,
-    private val onLaunchApp: (String) -> Unit,
-    private val onStatisticEvent: (HttpServerStatistic.StatisticEvent) -> Unit,
-    jpegBytesChannel: ReceiveChannel<ByteArray>,
-    onError: (AppError) -> Unit
+        private val serverAddresses: List<InetAddress>,
+        private val httpServerFiles: HttpServerFiles,
+        private val onAppAction: (String) -> Unit,
+        private val onSystemAction: (String) -> Unit,
+        private val onStatisticEvent: (HttpServerStatistic.StatisticEvent) -> Unit,
+        jpegBytesChannel: ReceiveChannel<ByteArray>,
+        onError: (AppError) -> Unit
 ) : HttpServerCoroutineScope(onError), RequestHandler<ByteBuf, ByteBuf> {
 
     private val indexHtml: String
     private val streamAddress: String
-    private val appLaunchAddress: String
-    private val startStopAddress: String
+    private val systemActionAddress: String
+    private val appActionAddress: String
     private val htmlEnableButtons: Boolean
     private val pinEnabled: Boolean
     private val pinAddress: String
@@ -62,10 +61,10 @@ internal class HttpServerRxHandler(
         }
 
         streamAddress = httpServerFiles.configureStreamAddress()
-        startStopAddress = httpServerFiles.configureStartStopAddress()
-        appLaunchAddress = httpServerFiles.configureAppLaunchAddress()
+        appActionAddress = httpServerFiles.configureAppActionAddress()
+        systemActionAddress = httpServerFiles.configureSystemActionAddress()
         indexHtml = httpServerFiles.configureIndexHtml(
-                streamAddress, startStopAddress, appLaunchAddress)
+                streamAddress, appActionAddress, systemActionAddress)
         pinAddress = httpServerFiles.configurePinAddress()
         pinRequestHtml = httpServerFiles.configurePinRequestHtml()
         pinRequestErrorHtml = httpServerFiles.configurePinRequestErrorHtml()
@@ -96,13 +95,13 @@ internal class HttpServerRxHandler(
             uri.startsWith(HttpServerFiles.JAVASCRIPT_ADDRESS) -> response.sendJavascript(httpServerFiles.getJavascript(uri.substringAfter("?")))
             uri.startsWith(HttpServerFiles.APP_ICON_ADDRESS) -> response.sendPng(httpServerFiles.getAppIconPng(uri.substringAfter("?")))
             uri.startsWith(HttpServerFiles.UI_ICON_ADDRESS) -> response.sendPng(httpServerFiles.getUIIconPng(uri.substringAfter("?")))
+            uri.startsWith(appActionAddress) -> onAppAction(uri.substringAfter("?")).run { response.empty() }
 
             uri == HttpServerFiles.ICON_PNG_ADDRESS -> response.sendPng(httpServerFiles.faviconPng)
             uri == HttpServerFiles.LOGO_PNG_ADDRESS -> response.sendPng(httpServerFiles.logoPng)
             uri == HttpServerFiles.FULLSCREEN_ON_PNG_ADDRESS -> response.sendPng(httpServerFiles.fullScreenOnPng)
             uri == HttpServerFiles.FULLSCREEN_OFF_PNG_ADDRESS -> response.sendPng(httpServerFiles.fullScreenOffPng)
-            uri == startStopAddress && htmlEnableButtons -> onStartStopRequest().run { response.sendHtml(indexHtml) }
-            uri.startsWith(appLaunchAddress) -> onLaunchApp(uri.substringAfter("?")).run {response.sendHtml(indexHtml) } // possible get rid of sending a response...
+            uri.startsWith(systemActionAddress) -> onSystemAction(uri.substringAfter("?")).run {response.empty() } // possible get rid of sending a response...
             uri == HttpServerFiles.DEFAULT_HTML_ADDRESS -> response.sendHtml(if (pinEnabled) pinRequestHtml else indexHtml)
             uri == pinAddress && pinEnabled -> response.sendHtml(indexHtml)
             uri.startsWith(HttpServerFiles.DEFAULT_PIN_ADDRESS) && pinEnabled -> response.sendHtml(pinRequestErrorHtml)
@@ -175,6 +174,11 @@ internal class HttpServerRxHandler(
                 // Sending boundary so browser can understand that previous image was fully send
                 .startWith(Unpooled.copiedBuffer(jpegBoundary, jpegBytesStream.value).array())
         )
+    }
+
+    private fun HttpServerResponse<ByteBuf>.empty(): Observable<Void> {
+        status = HttpResponseStatus.OK
+        return Observable.empty<Void>()
     }
 
     private fun HttpServerResponse<ByteBuf>.redirect(serverAddress: String): Observable<Void> {

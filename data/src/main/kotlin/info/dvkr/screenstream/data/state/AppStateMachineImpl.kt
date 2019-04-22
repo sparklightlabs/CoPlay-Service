@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.WindowManager
 import androidx.annotation.AnyThread
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import com.elvishew.xlog.XLog
 import info.dvkr.screenstream.data.httpserver.AppHttpServer
 import info.dvkr.screenstream.data.httpserver.AppHttpServerImpl
@@ -30,6 +29,7 @@ class AppStateMachineImpl(
     context: Context,
     parentJob: Job,
     private val settingsReadOnly: SettingsReadOnly,
+    private val settingsWriteOnly: Settings,
     appIconBitmap: Bitmap,
     onStatistic: (List<HttpClient>, List<TrafficPoint>) -> Unit,
     private val onEffect: (AppStateMachine.Effect) -> Unit
@@ -58,7 +58,7 @@ class AppStateMachineImpl(
         data class ComponentError(val appError: AppError) : InternalEvent()
         object StartStopFromWebPage : InternalEvent()
         data class RestartServer(val reason: RestartReason) : InternalEvent()
-        data class LaunchApp(val packageName: String) : InternalEvent()
+        data class PerformSysAction(val actionName: String) : InternalEvent()
         object ScreenOff : InternalEvent()
         object Destroy : InternalEvent()
 
@@ -126,7 +126,7 @@ class AppStateMachineImpl(
                         is InternalEvent.RestartServer -> restartServer(streamState, event.reason)
                         is InternalEvent.ScreenOff -> screenOff(streamState)
                         is InternalEvent.Destroy -> destroy(streamState)
-                        is InternalEvent.LaunchApp -> launchApp(streamState, event.packageName)
+                        is InternalEvent.PerformSysAction -> performSysAction(streamState, event.actionName)
 
                         is AppStateMachine.Event.StartStream -> startStream(streamState)
                         is AppStateMachine.Event.StartProjection -> startProjection(streamState, event.intent)
@@ -153,9 +153,18 @@ class AppStateMachineImpl(
         sendEvent(InternalEvent.ComponentError(appError))
     }
 
-    private fun onLaunch(packageName: String) {
-        Log.d("onLaunch", "name: $packageName")
-        sendEvent(InternalEvent.LaunchApp(packageName))
+    private fun onSystemAction(actionName: String) {
+        XLog.d(getLog("onSystemAction", "name: $actionName"))
+        sendEvent(InternalEvent.PerformSysAction(actionName))
+    }
+
+    private fun onAppAction(actionName: String) {
+        when {
+            actionName == HttpServerFiles.TOGGLE_STREAM_ADDRESS && settingsReadOnly.htmlEnableButtons -> sendEvent(InternalEvent.StartStopFromWebPage)
+            // Send event is handled by the settings change listener
+            actionName.startsWith(HttpServerFiles.CHANGE_IMAGE_SIZE_ADDRESS) -> settingsWriteOnly.resizeFactor = actionName.substringAfter("=").toInt()
+            actionName.startsWith(HttpServerFiles.CHANGE_IMAGE_COMPRESSION_ADDRESS) -> settingsWriteOnly.resizeFactor = actionName.substringAfter("=").toInt()
+        }
     }
 
     init {
@@ -169,8 +178,8 @@ class AppStateMachineImpl(
         appHttpServer = AppHttpServerImpl(
             HttpServerFiles(applicationContext, settingsReadOnly),
             jpegChannel,
-            { sendEvent(InternalEvent.StartStopFromWebPage) },
-            ::onLaunch,
+            ::onAppAction,
+            ::onSystemAction,
             onStatistic,
             ::onError
         )
@@ -322,17 +331,22 @@ class AppStateMachineImpl(
     }
 
 
-    private fun launchApp(streamState: StreamState, packageName: String) : StreamState {
-        Log.d("launchApp", "Invoked")
+    private fun performSysAction(streamState: StreamState, actionName: String) : StreamState {
         try {
-            applicationContext.startActivity(
-                    applicationContext.packageManager.getLaunchIntentForPackage(packageName))
+            when {
+                actionName.startsWith(HttpServerFiles.LAUNCH_APP_ADDRESS) ->
+                    applicationContext.startActivity(applicationContext.packageManager.getLaunchIntentForPackage(actionName.substringAfter("=")))
+
+                actionName == HttpServerFiles.GO_HOME_ADDRESS -> {
+                    var goHome: Intent = Intent(Intent.ACTION_MAIN)
+                    goHome.addCategory(Intent.CATEGORY_HOME)
+                    goHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    applicationContext.startActivity(goHome) }
+            }
         }
         catch (th: Throwable) {
-            XLog.e(getLog("launchApp"), th)
+            XLog.e(getLog("performSysAction"), th)
         }
-
-
         return streamState
     }
 

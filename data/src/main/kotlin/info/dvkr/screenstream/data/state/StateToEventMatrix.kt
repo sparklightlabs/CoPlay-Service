@@ -44,7 +44,7 @@ object StateToEventMatrix {
             AppStateMachineImpl.InternalEvent.RestartServer::class.java to Action.Process,
             AppStateMachineImpl.InternalEvent.ScreenOff::class.java to Action.Skipp,
             AppStateMachineImpl.InternalEvent.Destroy::class.java to Action.Process,
-            AppStateMachineImpl.InternalEvent.LaunchApp::class.java to Action.Process,
+            AppStateMachineImpl.InternalEvent.PerformSysAction::class.java to Action.Process,
 
             AppStateMachine.Event.StartStream::class.java to Action.Skipp,
             AppStateMachine.Event.StartProjection::class.java to Action.Error,
@@ -61,7 +61,7 @@ object StateToEventMatrix {
             AppStateMachineImpl.InternalEvent.RestartServer::class.java to Action.Process,
             AppStateMachineImpl.InternalEvent.ScreenOff::class.java to Action.Skipp,
             AppStateMachineImpl.InternalEvent.Destroy::class.java to Action.Process,
-            AppStateMachineImpl.InternalEvent.LaunchApp::class.java to Action.Process,
+            AppStateMachineImpl.InternalEvent.PerformSysAction::class.java to Action.Process,
 
             AppStateMachine.Event.StartStream::class.java to Action.Skipp,
             AppStateMachine.Event.StartProjection::class.java to Action.Skipp,
@@ -78,7 +78,7 @@ object StateToEventMatrix {
             AppStateMachineImpl.InternalEvent.RestartServer::class.java to Action.Process,
             AppStateMachineImpl.InternalEvent.ScreenOff::class.java to Action.Skipp,
             AppStateMachineImpl.InternalEvent.Destroy::class.java to Action.Process,
-            AppStateMachineImpl.InternalEvent.LaunchApp::class.java to Action.Process,
+            AppStateMachineImpl.InternalEvent.PerformSysAction::class.java to Action.Process,
 
             AppStateMachine.Event.StartStream::class.java to Action.Process,
             AppStateMachine.Event.StartStream::class.java to Action.Process,
@@ -96,7 +96,7 @@ object StateToEventMatrix {
             AppStateMachineImpl.InternalEvent.RestartServer::class.java to Action.Process,
             AppStateMachineImpl.InternalEvent.ScreenOff::class.java to Action.Process,
             AppStateMachineImpl.InternalEvent.Destroy::class.java to Action.Process,
-            AppStateMachineImpl.InternalEvent.LaunchApp::class.java to Action.Process,
+            AppStateMachineImpl.InternalEvent.PerformSysAction::class.java to Action.Process,
 
             AppStateMachine.Event.StartStream::class.java to Action.Skipp,
             AppStateMachine.Event.StartProjection::class.java to Action.Skipp,
@@ -113,7 +113,7 @@ object StateToEventMatrix {
             AppStateMachineImpl.InternalEvent.RestartServer::class.java to Action.Skipp,
             AppStateMachineImpl.InternalEvent.ScreenOff::class.java to Action.Skipp,
             AppStateMachineImpl.InternalEvent.Destroy::class.java to Action.Process,
-            AppStateMachineImpl.InternalEvent.LaunchApp::class.java to Action.Process,
+            AppStateMachineImpl.InternalEvent.PerformSysAction::class.java to Action.Process,
 
             AppStateMachine.Event.StartStream::class.java to Action.Skipp,
             AppStateMachine.Event.StartProjection::class.java to Action.Skipp,
@@ -130,7 +130,7 @@ object StateToEventMatrix {
             AppStateMachineImpl.InternalEvent.RestartServer::class.java to Action.Process,
             AppStateMachineImpl.InternalEvent.ScreenOff::class.java to Action.Skipp,
             AppStateMachineImpl.InternalEvent.Destroy::class.java to Action.Process,
-            AppStateMachineImpl.InternalEvent.LaunchApp::class.java to Action.Process,
+            AppStateMachineImpl.InternalEvent.PerformSysAction::class.java to Action.Process,
 
             AppStateMachine.Event.StartStream::class.java to Action.Skipp,
             AppStateMachine.Event.StartProjection::class.java to Action.Skipp,
@@ -147,7 +147,7 @@ object StateToEventMatrix {
             AppStateMachineImpl.InternalEvent.RestartServer::class.java to Action.Skipp,
             AppStateMachineImpl.InternalEvent.ScreenOff::class.java to Action.Skipp,
             AppStateMachineImpl.InternalEvent.Destroy::class.java to Action.Skipp,
-            AppStateMachineImpl.InternalEvent.LaunchApp::class.java to Action.Process,
+            AppStateMachineImpl.InternalEvent.PerformSysAction::class.java to Action.Process,
 
             AppStateMachine.Event.StartStream::class.java to Action.Skipp,
             AppStateMachine.Event.StartProjection::class.java to Action.Skipp,

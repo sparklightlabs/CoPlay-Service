@@ -5,8 +5,6 @@ import android.content.pm.ApplicationInfo
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.net.Uri
-import android.util.Log
 import com.elvishew.xlog.XLog
 import info.dvkr.screenstream.data.R
 import info.dvkr.screenstream.data.other.getLog
@@ -38,10 +36,11 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         private const val INDEX_HTML = "index.html"
         private const val INDEX_HTML_BACKGROUND_COLOR = "BACKGROUND_COLOR"
         private const val INDEX_HTML_SCREEN_STREAM_ADDRESS = "SCREEN_STREAM_ADDRESS"
-        private const val INDEX_HTML_START_STOP_ADDRESS = "START_STOP_ADDRESS"
+        private const val INDEX_HTML_APP_CONTROL_UI_ADDRESS = "APP_CONTROL_UI"
         private const val INDEX_HTML_APPLICATION_LIST = "APPLICATION_LIST"
         private const val INDEX_HTML_ENABLE_BUTTONS = "ENABLE_BUTTONS"
         private const val INDEX_HTML_CSS_STYLE= "CSS_STYLE"
+        private const val INDEX_HTML_ADDITIONAL_SETTINGS= "ADDITIONAL_SETTINGS"
 
         private const val PINREQUEST_HTML = "pinrequest.html"
         private const val PINREQUEST_HTML_STREAM_REQUIRE_PIN = "STREAM_REQUIRE_PIN"
@@ -52,8 +51,8 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
 
         const val DEFAULT_HTML_ADDRESS = "/"
         private const val DEFAULT_STREAM_ADDRESS = "/stream.mjpeg"
-        const val DEFAULT_LAUNCH_APP_ADDRESS = "/launch-app"
-        private const val DEFAULT_START_STOP_ADDRESS = "/start-stop"
+        const val DEFAULT_SYSTEM_ACTION_ADDRESS = "/system-action"
+        private const val DEFAULT_APP_ACTION_ADDRESS = "/app-action"
         const val DEFAULT_PIN_ADDRESS = "/?pin="
 
         const val ICON_PNG_ADDRESS = "/favicon.ico"
@@ -65,7 +64,13 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         const val APP_ICON_ADDRESS = "/app-icon"
         const val UI_ICON_ADDRESS = "/icons"
         const val JAVASCRIPT_ADDRESS = "/js"
-            const val CSS_ADDRESS = "/css"
+        const val TOGGLE_STREAM_ADDRESS = "toggle-stream"
+        const val CHANGE_IMAGE_SIZE_ADDRESS = "image-size"
+        const val CHANGE_IMAGE_COMPRESSION_ADDRESS = "image-compression"
+        const val GO_HOME_ADDRESS = "go-home"
+        const val GO_BACK_ADDRESS = "go-back"
+        const val LAUNCH_APP_ADDRESS = "launch-app"
+        const val CSS_ADDRESS = "/css"
     }
 
     private val applicationContext: Context = context.applicationContext
@@ -131,17 +136,19 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         return Pair(htmlEnableButtons, enablePin)
     }
 
-    fun buildApplicationList(address: String): String {
+    fun buildApplicationListHTML(address: String): String {
         var applicationList: String = ""
         this.applicationContext.packageManager.getInstalledApplications(0).forEach {
-            //var icon = this.applicationContext.packageManager.getApplicationIcon(it.packageName).
+            //var icon = this.applicationContext.packageManager.getApplicationIcon(it.actionName).
             applicationIconMap.put(it.packageName, getAppIconFromDrawable(it.packageName))
             if ((it.flags and ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM)
                 applicationList +=
-            "<a href=$address?${it.packageName} class=\"container-fluid float-left px-4\">" +
+            "<a onClick=sendRequest(\"$address?$LAUNCH_APP_ADDRESS=${it.packageName}\")  class=\"pointerCursor container-fluid float-left px-4\">" +
                 "<div class=\"row\">" +
                     "<div>" +
-                        "<div class=\"appIcon\">Icon</div>" +
+                        "<div class=\"appIcon\">" +
+                            "<img src=$APP_ICON_ADDRESS?${it.packageName} class=\" mx-auto d-block\" style=\"height: 94px; width: auto\"></img>" +
+                        "</div>" +
                     "</div>" +
                     "<div class=\"appDescription\">" +
                         "<div class=\"row no-gutters px-1 fixOverflow\"  style=\"max-height: 66%;\">" +
@@ -150,16 +157,51 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
                             "</div>"+
                         "</div>"+
                         "<div class=\"row no-gutters px-1 py-1\" style=\"height:  33%;\">"    +
-                            "<h6 class=\"card-subtitle mb-2 text-muted\" style=\"font-size: .9rem;\">Card subtitle</h6>" +
+                            "<h6 class=\"card-subtitle mb-2 text-muted\" style=\"font-size: .9rem;\">${it.packageName}</h6>" +
                        " </div>"+
                     "</div>"+
                 "</div>"+
             "</a>";
-
-
-
+            //TODO: Add this later: <img src=/app-icon?${it.actionName} class=\"card-img\" style=\"height: 125px;\">"
         }
         return applicationList
+    }
+
+    fun buildControlBarHTML(appControlAddress: String, systemControlAddress: String): String{
+
+        var appControl: String = "<div class=\"row no-gutters my-1\" style=\"text-align: center; height: 40px;\">" +
+        "<a onClick=sendRequest(\"${appControlAddress}?${TOGGLE_STREAM_ADDRESS}\")  class=\"pointerCursor col-4 py-2 mx-auto\">"+
+        "<img src=${UI_ICON_ADDRESS}?${PLAY_PNG} class=\"playPause\"></img><img src=${UI_ICON_ADDRESS}?${PAUSE_PNG} class=\"playPause\"></img>"+
+        "</a>"+
+        "<a onClick=sendRequest(\"${systemControlAddress}?${GO_HOME_ADDRESS}\") class=\"pointerCursor col-4 py-2 mx-auto\"> <img src=${UI_ICON_ADDRESS}?${HOME_PNG} class=\"uiIcon\"></i></a>"+
+        "<a href=\"#\" class=\"col-4 py-2 mx-auto\"> <img src=${UI_ICON_ADDRESS}?${BACK_PNG} class=\"uiIcon\"></a>"+
+       "</div>"
+        return appControl;
+    }
+
+    fun buildAdditionalSettingsHTML(appControlAddress: String) : String {
+        var additionalSettings =
+        "<div class=\"collapse overlap bg-dark\" id=\"navbarHeader\" style=\"right:0px;\">"+
+            "<div class=\"container-fluid\">"+
+                "<div class=\"row no-gutters\">"+
+                    "<div class=\"col-md-7 mx-auto py-4\">"+
+                        "<h4 class=\"text-white\">Additional Settings</h4>"+
+                            "<ul class=\"list-unstyled\">"+
+                                "<li>"+
+                                "<div class=\"text-white\">Image Quality</div>"+
+                                    "<input type=\"range\" min=\"10\" max=\"150\" class=\"custom-range\" onchange=sendRequest(\"${appControlAddress}?${CHANGE_IMAGE_SIZE_ADDRESS}=\"+this.value)>"+
+                                "</li>"+
+                                "<li>"+
+                                    "<div h class=\"text-white\">Image Compression</div>"+
+                                    "<input type=\"range\" min=\"10\" max=\"100\" class=\"custom-range\" onchange=sendRequest(\"${appControlAddress}?${CHANGE_IMAGE_COMPRESSION_ADDRESS}=\"+this.value)>"+
+                                "</li>"+
+                            "</ul>"+
+                        "</div>"+
+                    "</div>"+
+                "</div>"+
+                    "<div class=\"overlay\"> </div>"+
+            "</div>"
+        return additionalSettings;
     }
 
     // Gets app Icon and returns it in PNG ByteArray
@@ -206,29 +248,26 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         if (enablePin) "/" + randomString(16) + ".mjpeg"
         else HttpServerFiles.DEFAULT_STREAM_ADDRESS
 
-    fun configureStartStopAddress(): String =
+    fun configureAppActionAddress(): String =
         if (enablePin) "/" + randomString(16)
-        else HttpServerFiles.DEFAULT_START_STOP_ADDRESS
+        else HttpServerFiles.DEFAULT_APP_ACTION_ADDRESS
 
-    fun configureAppLaunchAddress(): String =
+    fun configureSystemActionAddress(): String =
         if (enablePin) "/" + randomString(16)
-        else HttpServerFiles.DEFAULT_LAUNCH_APP_ADDRESS
+        else HttpServerFiles.DEFAULT_SYSTEM_ACTION_ADDRESS
 
-    fun configureIndexHtml(streamAddress: String, startStopAddress: String, appLaunchAddress: String): String {
+    fun configureIndexHtml(streamAddress: String, appControlUIAddress: String, systemActionAddress: String): String {
         var newStyleSheet =
             baseStyleSheet.replaceFirst(
                 INDEX_HTML_BACKGROUND_COLOR.toRegex(),
                 "#%06X".format(0xFFFFFF and htmlBackColor)
         )
-        var appList = buildApplicationList(appLaunchAddress)
+        var appList = buildApplicationListHTML(systemActionAddress)
         return baseIndexHtml
-                .replaceFirst(
-                        INDEX_HTML_ENABLE_BUTTONS.toRegex(),
-                        htmlEnableButtons.toString()
-                )
-                .replaceFirst(INDEX_HTML_CSS_STYLE.toRegex(), newStyleSheet)
                 .replaceFirst(INDEX_HTML_SCREEN_STREAM_ADDRESS.toRegex(), streamAddress)
-                .replaceFirst(INDEX_HTML_START_STOP_ADDRESS.toRegex(), startStopAddress)
+                .replaceFirst(INDEX_HTML_APP_CONTROL_UI_ADDRESS.toRegex(), buildControlBarHTML(appControlUIAddress, systemActionAddress))
+                .replaceFirst(INDEX_HTML_ADDITIONAL_SETTINGS.toRegex(), buildAdditionalSettingsHTML(appControlUIAddress))
+                .replaceFirst(INDEX_HTML_CSS_STYLE.toRegex(), newStyleSheet)
                 .replaceFirst(INDEX_HTML_APPLICATION_LIST.toRegex(), appList)
     }
 
