@@ -39,7 +39,7 @@
     }
 
     .videoFrame {
-      max-width: 90vw;
+      max-width: 95vw;
       max-height: 80vh;
       width:  100%;
       background: #f8f9fa;
@@ -114,13 +114,14 @@
     .pointerCursor {
         cursor: pointer;
     }
+
     .landscapeImg {
         max-height: 100%;
         width: 100%;
         height: auto;
     }
-    .portraitImg {
+    .defaultImg {
+        height: 100%;
         max-width: 100%;
         width: auto;
-        height: 100%;
     }
