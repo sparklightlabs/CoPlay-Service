@@ -16,7 +16,7 @@
 </head>
 <body style="overflow-y: scroll; overflow-x:hidden;">
 
-<div style="width: 100vw; height:100vh; position:fixed; top:0; left:0; z-index: 0;" id="fullScreenOverlay"></div>
+<div style="width: 100vw; height:100vh; position:fixed; top:0; left:0; z-index: 10; display:none;" id="fullScreenOverlay"></div>
 
 
 <!-- ********************************* NAVBAR ********************************-->
@@ -44,7 +44,7 @@ ADDITIONAL_SETTINGS
 <div class="row my-3 mx-auto">
     <!-- ********************************* VideoFrame******************************-->
     <div class="col-md-8 h-75">
-        <div class="videoFrame bg-light">
+        <div class="videoFrame bg-light" id="vf">
             <img src="SCREEN_STREAM_ADDRESS" class="h-100 mw-100 d-block mx-auto my-auto"></img>
         </div>
         APP_CONTROL_UI
@@ -121,36 +121,21 @@ ADDITIONAL_SETTINGS
 <script src="/js?bootstrap.min.js" type="text/javascript"></script>
 <script>
 
+$( document ).ready(function() {
+  handleContainerSize();
+  $( ".videoFrame" ).height(.625*$( ".videoFrame" ).width());
+  $("#fullScreenOverlay").on("click", function(){
+    unMakeFullScreen();
+    });
+});
 
-function isFullscreen() {
-    return document.webkitIsFullScreen || document.mozFullScreen || false;
-}
-function fullScreenHandler() {
-    var fullscreenInput = document.getElementById("fullscreen");
-    if (isFullscreen()) fullscreenInput.src = "/fullscreen-off.png"; else fullscreenInput.src = "/fullscreen-on.png";
-}
+$( window ).on('resize', function() {
+  handleContainerSize();
+  $( ".videoFrame" ).height(.625*$( ".videoFrame" ).width());
+});
 
-
-document.addEventListener("fullscreenchange", fullScreenHandler);
-document.addEventListener("webkitfullscreenchange", fullScreenHandler);
-document.addEventListener("mozfullscreenchange", fullScreenHandler);
-document.addEventListener("MSFullscreenChange", fullScreenHandler);
-
-
-function toggleFullscreen() {
-    var element = document.documentElement;
-    element.requestFullScreen = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || function () { return false; };
-    document.cancelFullScreen = document.cancelFullScreen || document.webkitCancelFullScreen || document.mozCancelFullScreen || function () { return false; };
-    if (!isFullscreen()) {
-      element.requestFullScreen();
-      fullScreen();
-    }
-}
-
-
-function handleResize() {
+function handleContainerSize() {
   var viewportWidth = $(window).width();
-  console.log(viewportWidth);
   if (viewportWidth >= 992) {
       $("#contentContainer").removeClass("container-fluid px-0");
       $("#contentContainer").addClass("container");
@@ -161,37 +146,9 @@ function handleResize() {
   }
 }
 
-$( document ).ready(function() {
-  handleResize();
-  $( ".videoFrame" ).height(.625*$( ".videoFrame" ).width());
-  $("#fullScreenOverlay").on("click", function(){
-      console.log("fullScreenOverlay onClick");
-      $("#vf").removeClass("fullScreenVideo");
-      $("#vf").addClass("videoFrame");
-      $( ".videoFrame" ).height(.625*$( ".videoFrame" ).width());
-        $("#fullScreenOverlay").css("z-index","0");
-     });
-});
-
- function fullScreen() {
-   console.log("ToggleFullScreen");
-   $("#vf").removeClass("videoFrame");
-   $("#vf").addClass("fullScreenVideo");
-   $( "#vf" ).height("100vh");
-   $( "#vf" ).css("z-index","2");
-   $("#fullScreenOverlay").css("z-index","10");
- }
-
-/*
 window.addEventListener("orientationchange", function() {
-    handleResize();
-    alert(window.orientation);
+    toggleFullscreen();
 }, false);
-*/
-$( window ).on('resize', function() {
-  handleResize();
-  $( ".videoFrame" ).height(.625*$( ".videoFrame" ).width());
-});
 
 function sendRequest(request) {
     console.log(request);
@@ -200,10 +157,42 @@ function sendRequest(request) {
     xmlHttp.send(null);
 }
 
-$(".overlay").on("click", function() {
-  console.log("Hello")
-  $("#toggleCollapseBtn").click();
-});
+
+
+/**********************************FULLSCREEN HANDLERS*****************************/
+function unMakeFullScreen() {
+      $("#vf").removeClass("fullScreenVideo");
+      $("#vf").addClass("videoFrame");
+      $( ".videoFrame" ).height(.625*$( ".videoFrame" ).width());
+       $("#fullScreenOverlay").css("display","none");
+       toggleFullscreen();
+}
+
+
+function makeFullScreen() {
+    $("#vf").removeClass("videoFrame");
+    $("#vf").addClass("fullScreenVideo");
+    $( "#vf" ).height("100vh");
+    $( "#vf" ).css("z-index","2");
+    $("#fullScreenOverlay").css("display","initial");
+}
+
+function toggleFullscreen() {
+    var element = document.documentElement;
+    element.requestFullScreen = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || function () { return false; };
+    document.cancelFullScreen = document.cancelFullScreen || document.webkitCancelFullScreen || document.mozCancelFullScreen || function () { return false; };
+    if (!isFullscreen()) {
+      element.requestFullScreen();
+      makeFullScreen();
+    }
+    else {
+        document.cancelFullScreen()    }
+}
+
+function isFullscreen() {
+    return document.webkitIsFullScreen || document.mozFullScreen || false;
+}
+
 </script>
 </body>
 

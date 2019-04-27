@@ -174,7 +174,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         "<img src=${UI_ICON_ADDRESS}?${PLAY_PNG} class=\"playPause\"></img><img src=${UI_ICON_ADDRESS}?${PAUSE_PNG} class=\"playPause\"></img>"+
         "</a>"+
         "<a onClick=sendRequest(\"${systemControlAddress}?${GO_HOME_ADDRESS}\") class=\"pointerCursor col-4 py-2 mx-auto\"> <img src=${UI_ICON_ADDRESS}?${HOME_PNG} class=\"uiIcon\"></i></a>"+
-        "<a href=\"#\" class=\"col-4 py-2 mx-auto\"> <img src=${UI_ICON_ADDRESS}?${BACK_PNG} class=\"uiIcon\"></a>"+
+        "<a onClick=toggleFullscreen() class=\"col-4 py-2 mx-auto\"> <img src=${UI_ICON_ADDRESS}?${BACK_PNG} class=\"uiIcon\"></a>"+
        "</div>"
         return appControl;
     }
