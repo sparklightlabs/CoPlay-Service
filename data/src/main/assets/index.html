@@ -146,11 +146,12 @@ function handleContainerSize() {
   }
 }
 
-window.addEventListener("orientationchange", function() {
-    if (isFullScreen()) {
-        handleFullScreenImgOrientation();
-    }
-}, false);
+window.addEventListener('orientationchange', function () {
+    orientationChanged().then(function() {
+      handleFullScreenOrientationChange();
+    });
+});
+
 
 function sendRequest(request) {
     console.log(request);
@@ -189,11 +190,11 @@ function toggleFullscreen() {
     if (!isFullScreen()) {
       element.requestFullScreen();
       makeFullScreen();
-      handleFullScreenImgOrientation();
+      handleFullScreenImg();
     }
 }
 
-function handleFullScreenImgOrientation() {
+function handleFullScreenImg() {
     if (isPortrait()) {
         $("#screenImg").removeClass("defaultImg");
         $("#screenImg").addClass("landscapeImg");
@@ -212,15 +213,37 @@ function isPortrait() {
     return false;
 }
 
-function isFullscreen() {
-    return document.webkitIsFullScreen || document.mozFullScreen || false;
-}
-
 function isFullScreen() {
     if( window.innerHeight == screen.height) {
         return true;
     }
     return false;
+}
+
+function orientationChanged() {
+  const timeout = 120;
+  return new window.Promise(function(resolve) {
+    const go = (i, height0) => {
+      window.innerHeight != height0 || i >= timeout ?
+        resolve() :
+        window.requestAnimationFrame(() => go(i + 1, height0));
+    };
+    go(0, window.innerHeight);
+  });
+}
+
+
+function handleFullScreenOrientationChange() {
+ if ($("#vf").hasClass("fullScreenVideo")) {
+        if ($("#screenImg").hasClass("landscapeImg")) {
+            $("#screenImg").removeClass("landscapeImg");
+            $("#screenImg").addClass("defaultImg");
+        }
+        else if ($("#screenImg").hasClass("defaultImg")) {
+            $("#screenImg").removeClass("defaultImg");
+            $("#screenImg").addClass("landscapeImg");
+        }
+    }
 }
 
 </script>
