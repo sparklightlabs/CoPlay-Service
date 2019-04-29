@@ -24,7 +24,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         private const val PAUSE_PNG = "pause.png"
         private const val PLAY_PNG = "play.png"
         private const val HOME_PNG = "home.png"
-        private const val BACK_PNG = "back.png"
+        private const val FULLSCREEN_PNG = "fullscreen.png"
         private const val MENU_PNG = "menu.png"
 
         private const val CSS_STYLESHEET = "styles.css"
@@ -84,7 +84,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
     val playPng = getFileFromAssets(applicationContext, PLAY_PNG)
     val menuPng = getFileFromAssets(applicationContext, MENU_PNG)
     val homePng = getFileFromAssets(applicationContext, HOME_PNG)
-    val backPng = getFileFromAssets(applicationContext, BACK_PNG)
+    val fullscreenPng = getFileFromAssets(applicationContext, FULLSCREEN_PNG)
 
     private val baseIndexHtml =
         String(getFileFromAssets(applicationContext, INDEX_HTML), StandardCharsets.UTF_8)
@@ -143,7 +143,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
             applicationIconMap.put(it.packageName, getAppIconFromDrawable(it.packageName))
             if ((it.flags and ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM)
                 applicationList +=
-            "<a onClick=sendRequest(\"$address?$LAUNCH_APP_ADDRESS=${it.packageName}\")  class=\"pointerCursor container-fluid float-left px-4\">" +
+            "<a onClick=launchApp(this,\"$address?$LAUNCH_APP_ADDRESS=${it.packageName}\")  class=\"pointerCursor container-fluid float-left px-4\">" +
                 "<div class=\"row\">" +
                     "<div>" +
                         "<div class=\"appIcon\">" +
@@ -162,7 +162,6 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
                     "</div>"+
                 "</div>"+
             "</a>";
-            //TODO: Add this later: <img src=/app-icon?${it.actionName} class=\"card-img\" style=\"height: 125px;\">"
         }
         return applicationList
     }
@@ -170,11 +169,11 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
     fun buildControlBarHTML(appControlAddress: String, systemControlAddress: String): String{
 
         var appControl: String = "<div class=\"row no-gutters my-1\" style=\"text-align: center; height: 40px;\">" +
-        "<a onClick=sendRequest(\"${appControlAddress}?${TOGGLE_STREAM_ADDRESS}\")  class=\"pointerCursor col-4 py-2 mx-auto\">"+
+        "<a onClick=sendRequest(\"${appControlAddress}?${TOGGLE_STREAM_ADDRESS}\")  class=\"pointerCursor col-4 py-1 mx-auto\">"+
         "<img src=${UI_ICON_ADDRESS}?${PLAY_PNG} class=\"playPause\"></img><img src=${UI_ICON_ADDRESS}?${PAUSE_PNG} class=\"playPause\"></img>"+
         "</a>"+
-        "<a onClick=sendRequest(\"${systemControlAddress}?${GO_HOME_ADDRESS}\") class=\"pointerCursor col-4 py-2 mx-auto\"> <img src=${UI_ICON_ADDRESS}?${HOME_PNG} class=\"uiIcon\"></i></a>"+
-        "<a onClick=toggleFullscreen() class=\"col-4 py-2 mx-auto\"> <img src=${UI_ICON_ADDRESS}?${BACK_PNG} class=\"uiIcon\"></a>"+
+        "<a onClick=toggleFullscreen() class=\"col-4 py-1 mx-auto\"> <img src=${UI_ICON_ADDRESS}?${FULLSCREEN_PNG} class=\"uiIcon\"></a>"+
+        "<a onClick=sendRequest(\"${systemControlAddress}?${GO_HOME_ADDRESS}\") class=\"pointerCursor col-4 py-1 mx-auto\"> <img src=${UI_ICON_ADDRESS}?${HOME_PNG} class=\"uiIcon\"></i></a>"+
        "</div>"
         return appControl;
     }
@@ -227,7 +226,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
     fun getUIIconPng(name: String): ByteArray {
         when (name) {
             HOME_PNG -> return homePng
-            BACK_PNG -> return backPng
+            FULLSCREEN_PNG -> return fullscreenPng
             MENU_PNG -> return menuPng
             PLAY_PNG -> return playPng
             PAUSE_PNG -> return pausePng

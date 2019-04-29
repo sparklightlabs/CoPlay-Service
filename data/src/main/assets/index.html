@@ -43,24 +43,26 @@ ADDITIONAL_SETTINGS
 <div class="container" id="contentContainer">
 <div class="row my-3 mx-auto">
     <!-- ********************************* VideoFrame******************************-->
-    <div class="col-md-8 h-75">
+    <div class="col-md-8 h-75" id="col_1">
         <div class="videoFrame bg-light mx-auto d-flex row align-items-center" id="vf">
             <img src="SCREEN_STREAM_ADDRESS" class="defaultImg d-block mx-auto my-auto" id="screenImg"></img>
         </div>
         APP_CONTROL_UI
         <!-- ********************************* SelectedApp******************************-->
         <div class="container-fluid px-0 my-1 selectedAppBorder">
-            <div class="selectedApp" style="">
+            <div class="selectedApp" >
                 <div class="row px-3 py-1" style="height: 66%">
                     <div class="container-fluid float-left">
                         <div class="row">
                             <div>
-                                <div class="appIcon">Icon</div>
+                                <div class="appIcon">
+                                    <img src="" class=" mx-auto d-block" style="height: 94px; width: auto" id="currentAppImg"></img>
+                                </div>
                             </div>
                             <div class="appDescription">
                                 <div class="row no-gutters px-1 fixOverflow"  style="max-height: 66%;">
                                     <div class="fixOverflow">
-                                        <h5 class="card-title" style="font-size: 1.15rem;">Sparklight Labs | Co-Play</h5>
+                                        <h5 class="card-title" style="font-size: 1.15rem;" id="currentAppTitle">Sparklight Labs | Co-Play</h5>
                                     </div>
                                 </div>
                                 <div class="row no-gutters px-1 py-1" style="height:  33%;">
@@ -76,7 +78,7 @@ ADDITIONAL_SETTINGS
 
                 </div>
                 <div class="row px-3" style="height: 33%;">
-                    <a href="#" class="col-md-12" style="text-align: center;" id="ActionsCollapseBtn" data-toggle="collapse" data-target="#actionsCardDropDown" aria-controls="navbarHeader">
+                    <a onClick="resizeAppList()" class="col-md-12" style="text-align: center;" id="ActionsCollapseBtn" data-toggle="collapse" data-target="#actionsCardDropDown" aria-controls="navbarHeader">
                         Actions
                         <br><img src="/icons?menu.png" class="uiIcon"></i></br>
                     </a>
@@ -107,7 +109,7 @@ ADDITIONAL_SETTINGS
         </div>
     </div>
     <!--**************************************************************************-->
-    <div class="col-md-4 px-1">
+    <div class="col-md-4 px-1" style="overflow-y: scroll; overflow-x: hidden;" id="col_2">
         APPLICATION_LIST
     </div>
 
@@ -122,8 +124,9 @@ ADDITIONAL_SETTINGS
 <script>
 
 $( document ).ready(function() {
+  handleAspectRatio();
   handleContainerSize();
-  $( ".videoFrame" ).height(.625*$( ".videoFrame" ).width());
+  resizeAppList();
   $("#fullScreenOverlay").on("click", function(){
     unMakeFullScreen();
     });
@@ -131,8 +134,28 @@ $( document ).ready(function() {
 
 $( window ).on('resize', function() {
   handleContainerSize();
-  $( ".videoFrame" ).height(.625*$( ".videoFrame" ).width());
+  handleAspectRatio();
+  resizeAppList();
 });
+
+function handleAspectRatio() {
+  $( ".videoFrame" ).height(.625*$( ".videoFrame" ).width());
+}
+
+function resizeAppList() {
+
+    setTimeout(function() {
+      console.log("resizing app list");
+        //768 is the pixel number that our columns wrap at.
+      if ($(window).width() >= 768) {
+       $("#col_2").height($("#col_1").height());
+      }
+      else {
+        $("#col_2").height("100%");
+      }
+    }, 250);
+
+}
 
 function handleContainerSize() {
   var viewportWidth = $(window).width();
@@ -147,11 +170,18 @@ function handleContainerSize() {
 }
 
 window.addEventListener('orientationchange', function () {
-    orientationChanged().then(function() {
+    waitForAnimation().then(function() {
       handleFullScreenOrientationChange();
     });
 });
 
+function launchApp(element, request) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", window.location.origin + request, true);
+    xmlHttp.send(null);
+    $("#currentAppImg").attr('src',$(element).find('img').attr('src'));
+    $("#currentAppTitle").text($(element).find('h5').text());
+}
 
 function sendRequest(request) {
     console.log(request);
@@ -220,7 +250,7 @@ function isFullScreen() {
     return false;
 }
 
-function orientationChanged() {
+function waitForAnimation() {
   const timeout = 120;
   return new window.Promise(function(resolve) {
     const go = (i, height0) => {

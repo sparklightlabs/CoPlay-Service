@@ -1,3 +1,11 @@
+    html {
+        overflow-x: hidden;
+    }
+    ::-webkit-scrollbar {
+        width: 0px;  /* Remove scrollbar space */
+        background: transparent;  /* Optional: just make scrollbar invisible */
+    }
+
     @media only screen and (max-width : 575.9px) {
       .videoFrame {
         height: calc(36vh - 50px);
@@ -57,7 +65,6 @@
     }
 
     .selectedApp {
-      height: calc(30vh - 50px);
       min-height: 160px;
       width: 100%;
     }
