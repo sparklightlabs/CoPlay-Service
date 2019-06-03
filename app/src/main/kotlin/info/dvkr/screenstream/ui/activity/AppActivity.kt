@@ -30,6 +30,7 @@ import info.dvkr.screenstream.ui.fragment.SettingsFragment
 import info.dvkr.screenstream.ui.fragment.StreamFragment
 import info.dvkr.screenstream.ui.router.FragmentRouter
 import kotlinx.android.synthetic.main.activity_app.*
+import org.koin.android.ext.android.inject
 
 class AppActivity : BaseActivity() {
 

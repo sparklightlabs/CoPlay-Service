@@ -66,7 +66,7 @@ internal class HttpServerRxHandler(
         indexHtml = httpServerFiles.configureIndexHtml(
                 streamAddress, appActionAddress, systemActionAddress)
         pinAddress = httpServerFiles.configurePinAddress()
-        pinRequestHtml = httpServerFiles.configurePinRequestHtml()
+        pinRequestHtml = httpServerFiles.configurePinRequestHtml(streamAddress)
         pinRequestErrorHtml = httpServerFiles.configurePinRequestErrorHtml()
 
         launch {

@@ -22,6 +22,7 @@ import org.koin.android.ext.android.inject
 
 abstract class BaseActivity : AppCompatActivity() {
 
+    protected val settings: Settings by inject()
     protected val settingsReadOnly: SettingsReadOnly by inject()
     private var serviceMessenger: Messenger? = null
     private var isBound: Boolean = false

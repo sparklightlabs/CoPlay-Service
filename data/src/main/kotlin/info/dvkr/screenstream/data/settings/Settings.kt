@@ -30,16 +30,16 @@ interface Settings : SettingsReadOnly {
 
     object Default {
         const val NIGHT_MODE = -1
-        const val MINIMIZE_ON_STREAM = true
+        const val MINIMIZE_ON_STREAM = false
         const val STOP_ON_SLEEP = false
         const val START_ON_BOOT = false
-        const val NOTIFY_SLOW_CONNECTIONS = true
+        const val NOTIFY_SLOW_CONNECTIONS = false
 
         const val HTML_ENABLE_BUTTONS = true
         const val HTML_BACK_COLOR = -16777216 // "ff000000".toLong(radix = 16).toInt()
 
-        const val JPEG_QUALITY = 80
-        const val RESIZE_FACTOR = 50
+        const val JPEG_QUALITY = 40
+        const val RESIZE_FACTOR = 25
         const val ROTATION = Values.ROTATION_0
 
         const val ENABLE_PIN = false

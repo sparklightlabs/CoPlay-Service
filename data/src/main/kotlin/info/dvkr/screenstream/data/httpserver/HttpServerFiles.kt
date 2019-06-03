@@ -273,11 +273,22 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
     fun configurePinAddress(): String =
         if (enablePin) DEFAULT_PIN_ADDRESS + pin else DEFAULT_PIN_ADDRESS
 
-    fun configurePinRequestHtml(): String =
-        if (enablePin)
-            basePinRequestHtml.replaceFirst(PINREQUEST_HTML_WRONG_PIN_MESSAGE.toRegex(), "&nbsp")
+    fun configurePinRequestHtml(streamAddress: String): String {
+        if (enablePin) {
+            var newStyleSheet =
+                    baseStyleSheet.replaceFirst(
+                            INDEX_HTML_BACKGROUND_COLOR.toRegex (),
+                            "#%06X".format(0xFFFFFF and htmlBackColor)
+                    )
+            return basePinRequestHtml
+                    .replaceFirst(INDEX_HTML_CSS_STYLE.toRegex(), newStyleSheet)
+                    .replaceFirst(INDEX_HTML_SCREEN_STREAM_ADDRESS.toRegex(), streamAddress)
+                    .replaceFirst(PINREQUEST_HTML_WRONG_PIN_MESSAGE.toRegex(), "&nbsp")
+        }
         else
-            ""
+            return ""
+    }
+
 
     fun configurePinRequestErrorHtml(): String =
         if (enablePin)
