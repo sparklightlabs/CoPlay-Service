@@ -56,12 +56,12 @@ class BitmapNotification(
     private fun generateImage(message: String, logo: Bitmap): Bitmap {
         val bitmap: Bitmap = Bitmap.createBitmap(640, 400, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        canvas.drawRGB(25, 118, 159)
+        canvas.drawRGB(248, 249, 250)
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         canvas.drawBitmap(logo, 192f, 16f, paint)
 
         paint.textSize = 24f
-        paint.color = Color.WHITE
+        paint.color = Color.BLACK
         val bounds = Rect()
         paint.getTextBounds(message, 0, message.length, bounds)
         val x = (bitmap.width - bounds.width()) / 2f

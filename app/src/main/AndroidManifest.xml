@@ -20,7 +20,8 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.App.DayNight"
+        android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"
+
         tools:ignore="GoogleAppIndexingWarning">
 
         <meta-data
@@ -56,6 +57,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
 

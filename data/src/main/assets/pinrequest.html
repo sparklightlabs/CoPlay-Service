@@ -15,7 +15,7 @@
             height: 30px;
         }
     </style>
-    <title>Co-Play</title>
+    <title>CoPlay</title>
 </head>
 <header>
     <div class="row  no-gutters">
@@ -23,7 +23,7 @@
             <div class="container-fluid h-100 d-flex justify-content-between px-0">
                 <div class="text-white navbar-brand d-flex align-items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                    <strong>Co-Play</strong>
+                    <strong>CoPlay</strong>
                 </div>
                 <button class="navbar-toggler" style="font-size: 1em" type="button" id="toggleCollapseBtn" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -69,6 +69,13 @@
 <script src="/js?popper.min.js" type="text/javascript"></script>
 <script src="/js?bootstrap.min.js" type="text/javascript"></script>
 <script>
+var noSleep = new NoSleep();
+
+document.addEventListener('click', function enableNoSleep() {
+  document.removeEventListener('click', enableNoSleep, false);
+  noSleep.enable();
+}, false);
+
 $( document ).ready(function() {
   handleAspectRatio();
   handleContainerSize();

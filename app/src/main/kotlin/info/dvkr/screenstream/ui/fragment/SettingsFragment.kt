@@ -148,7 +148,7 @@ class SettingsFragment : Fragment() {
         // Interface - Stop on sleep
         with(cb_fragment_settings_stop_on_sleep) {
             isChecked = settings.stopOnSleep
-            setOnClickListener { settings.stopOnSleep = isChecked }
+            setOnClickListener  { settings.stopOnSleep = isChecked }
             cl_fragment_settings_stop_on_sleep.setOnClickListener { performClick() }
         }
 
