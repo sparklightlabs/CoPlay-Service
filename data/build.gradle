@@ -7,9 +7,9 @@ apply plugin: 'kotlin-kapt'
 android {
     signingConfigs {
         config {
-            keyAlias 'androiddebugkey'
+            keyAlias 'local'
             keyPassword 'android'
-            storeFile file('/home/bradyriddle/Desktop/debug.keystore')
+            storeFile file('/Users/bradyriddle/local')
             storePassword 'android'
         }
     }

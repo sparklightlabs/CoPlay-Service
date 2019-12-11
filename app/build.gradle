@@ -8,9 +8,9 @@ apply plugin: 'io.fabric'
 android {
     signingConfigs {
         config {
-            keyAlias 'androidkey'
+            keyAlias 'local'
             keyPassword 'android'
-            storeFile file('Z:/androidkeystore.jks')
+            storeFile file('/Users/bradyriddle/local')
             storePassword 'android'
         }
     }
