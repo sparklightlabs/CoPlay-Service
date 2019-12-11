@@ -13,6 +13,7 @@ interface SettingsReadOnly {
     val htmlEnableButtons: Boolean
     val htmlBackColor: Int
 
+    val vrMode: Int
     val imageCrop: Boolean
     val imageCropTop: Int
     val imageCropBottom: Int

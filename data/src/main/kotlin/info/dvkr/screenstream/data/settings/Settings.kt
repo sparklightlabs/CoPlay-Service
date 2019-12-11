@@ -12,6 +12,7 @@ interface Settings : SettingsReadOnly {
         const val HTML_ENABLE_BUTTONS = "PREF_KEY_HTML_ENABLE_BUTTONS"
         const val HTML_BACK_COLOR = "PREF_KEY_HTML_BACK_COLOR"
 
+        const val VR_MODE = "PREF_KEY_VR_MODE"
         const val IMAGE_CROP = "PREF_KEY_IMAGE_CROP"
         const val IMAGE_CROP_TOP = "PREF_KEY_IMAGE_CROP_TOP"
         const val IMAGE_CROP_BOTTOM = "PREF_KEY_IMAGE_CROP_BOTTOM"
@@ -46,6 +47,9 @@ interface Settings : SettingsReadOnly {
         const val JPEG_QUALITY = 40
         const val RESIZE_FACTOR = 25
 
+        const val VR_MODE_DISABLE = 0
+        const val VR_MODE_LEFT = 1
+        const val VR_MODE_RIGHT = 2
         const val IMAGE_CROP = false
         const val IMAGE_CROP_TOP = 0
         const val IMAGE_CROP_BOTTOM = 0
@@ -83,6 +87,7 @@ interface Settings : SettingsReadOnly {
     override var htmlEnableButtons: Boolean
     override var htmlBackColor: Int
 
+    override var vrMode: Int
     override var imageCrop: Boolean
     override var imageCropTop: Int
     override var imageCropBottom: Int
