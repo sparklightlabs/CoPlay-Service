@@ -10,7 +10,12 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.annotation.AnyThread
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
+import androidx.core.   content.ContextCompat
+import com.android.volley.*
+import com.android.volley.toolbox.HttpHeaderParser
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.droidnet.DroidNet
 import com.elvishew.xlog.XLog
 import info.dvkr.screenstream.R
 import info.dvkr.screenstream.data.model.AppError

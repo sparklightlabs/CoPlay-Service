@@ -128,7 +128,7 @@
         height: auto;
     }
     .defaultImg {
-        height: 100%;
-        max-width: 100%;
-        width: auto;
+        height: auto;
+        max-height: 100%;
+        width: 100%;
     }

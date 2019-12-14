@@ -50,12 +50,12 @@ interface Settings : SettingsReadOnly {
         const val VR_MODE_DISABLE = 0
         const val VR_MODE_LEFT = 1
         const val VR_MODE_RIGHT = 2
-        const val IMAGE_CROP = false
-        const val IMAGE_CROP_TOP = 0
-        const val IMAGE_CROP_BOTTOM = 0
+        const val IMAGE_CROP = true
+        const val IMAGE_CROP_TOP = 150
+        const val IMAGE_CROP_BOTTOM = 250
         const val IMAGE_CROP_LEFT = 0
         const val IMAGE_CROP_RIGHT = 0
-        const val ROTATION = Values.ROTATION_0
+        const val ROTATION = 0
 
         const val ENABLE_PIN = false
         const val HIDE_PIN_ON_START = true

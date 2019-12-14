@@ -8,9 +8,9 @@ apply plugin: 'io.fabric'
 android {
     signingConfigs {
         config {
-            keyAlias 'androidkey'
+            keyAlias 'local'
             keyPassword 'android'
-            storeFile file('Z:/androidkeystore.jks')
+            storeFile file('/Users/bradyriddle/local')
             storePassword 'android'
         }
     }
@@ -23,7 +23,6 @@ android {
         versionCode = 30017
         versionName = "3.0.17"
         resConfigs("en", "ru", "pt-rBR", "zh-rTW", "fr-rFR", "fa", "it", "pl")
-
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -70,6 +69,8 @@ kapt { useBuildCache = true }
 
 dependencies {
     implementation project(':data')
+    implementation 'com.job:droidnet:2.0.0'
+    implementation 'com.android.volley:volley:1.1.1'
     implementation "org.jetbrains:annotations:$jetbrainsAnnotations"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
