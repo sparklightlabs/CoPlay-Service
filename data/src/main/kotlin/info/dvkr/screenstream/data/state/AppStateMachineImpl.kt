@@ -25,6 +25,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 import kotlin.coroutines.CoroutineContext
 
+
 class AppStateMachineImpl(
     context: Context,
     parentJob: Job,
@@ -334,9 +335,11 @@ class AppStateMachineImpl(
     private fun performSysAction(streamState: StreamState, actionName: String) : StreamState {
         try {
             when {
-                actionName.startsWith(HttpServerFiles.LAUNCH_APP_ADDRESS) ->
-                    applicationContext.startActivity(applicationContext.packageManager.getLaunchIntentForPackage(actionName.substringAfter("=")))
-
+                actionName.startsWith(HttpServerFiles.LAUNCH_APP_ADDRESS) -> {
+                    var getLaunchIntent = applicationContext.packageManager.getLaunchIntentForPackage(actionName.substringAfter("="))
+                    getLaunchIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    applicationContext.startActivity(getLaunchIntent)
+                }
                 actionName == HttpServerFiles.GO_HOME_ADDRESS -> {
                     var goHome: Intent = Intent(Intent.ACTION_MAIN)
                     goHome.addCategory(Intent.CATEGORY_HOME)
