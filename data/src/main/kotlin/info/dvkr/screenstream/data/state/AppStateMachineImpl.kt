@@ -2,6 +2,7 @@ package info.dvkr.screenstream.data.state
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.util.Log
 import android.view.WindowManager
@@ -24,6 +25,9 @@ import info.dvkr.screenstream.data.state.helper.NetworkHelper
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 import kotlin.coroutines.CoroutineContext
+import android.content.ComponentName
+
+
 
 
 class AppStateMachineImpl(
@@ -89,13 +93,13 @@ class AppStateMachineImpl(
 
     override fun sendEvent(event: AppStateMachine.Event, timeout: Long) {
         if (timeout > 0) {
-            XLog.d(getLog("sendEvent[Timeout: $timeout]", "Event: $event"))
+            Log.d("sendEvent[Timeout: $timeout]", "Event: $event")
             launch { delay(timeout); sendEvent(event) }
         } else {
-            XLog.d(getLog("sendEvent", "Event: $event"))
+            Log.d("sendEvent", "Event: $event")
 
             if (supervisorJob.isActive.not()) {
-                XLog.w(getLog("sendEvent", "JobIsNotActive"))
+                Log.d("sendEvent", "JobIsNotActive")
                 return
             }
 
@@ -103,7 +107,7 @@ class AppStateMachineImpl(
                 eventChannel.offer(event) || throw IllegalStateException("ChannelIsFull")
             } catch (ignore: ClosedSendChannelException) {
             } catch (th: Throwable) {
-                XLog.e(getLog("sendEvent"), th)
+                Log.d("sendEvent", th.toString())
                 onEffect(AppStateMachine.Effect.PublicState(false, true, emptyList(), FatalError.ChannelException))
             }
         }
@@ -160,8 +164,9 @@ class AppStateMachineImpl(
     }
 
     private fun onAppAction(actionName: String) {
+        Log.d("onAppAction", "Action triggered")
         when {
-            actionName == HttpServerFiles.TOGGLE_STREAM_ADDRESS && settingsReadOnly.htmlEnableButtons -> sendEvent(InternalEvent.StartStopFromWebPage)
+            actionName == HttpServerFiles.TOGGLE_STREAM_ADDRESS -> sendEvent(InternalEvent.StartStopFromWebPage)
             // Send event is handled by the settings change listener
             actionName.startsWith(HttpServerFiles.CHANGE_IMAGE_SIZE_ADDRESS) -> settingsWriteOnly.resizeFactor = actionName.substringAfter("=").toInt()
             actionName.startsWith(HttpServerFiles.CHANGE_IMAGE_COMPRESSION_ADDRESS) -> settingsWriteOnly.resizeFactor = actionName.substringAfter("=").toInt()
@@ -334,21 +339,59 @@ class AppStateMachineImpl(
 
     private fun performSysAction(streamState: StreamState, actionName: String) : StreamState {
         try {
+            Log.d("performSysAction", "Starting")
             when {
                 actionName.startsWith(HttpServerFiles.LAUNCH_APP_ADDRESS) -> {
                     var getLaunchIntent = applicationContext.packageManager.getLaunchIntentForPackage(actionName.substringAfter("="))
-                    getLaunchIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     applicationContext.startActivity(getLaunchIntent)
                 }
                 actionName == HttpServerFiles.GO_HOME_ADDRESS -> {
                     var goHome: Intent = Intent(Intent.ACTION_MAIN)
                     goHome.addCategory(Intent.CATEGORY_HOME)
                     goHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    applicationContext.startActivity(goHome) }
+                    applicationContext.startActivity(goHome)
+                }
+                actionName.startsWith(HttpServerFiles.LAUNCH_ACTION_ADDRESS) -> {
+                    Log.d("performSysAction", "LAUNCH_ACTION_ADDRESS: " + actionName)
+                    var data = actionName.substringAfter('=').split(',')
+                    val packageName = data[0]
+                    val action = data[1]
+                    if (action == "RESUME") {
+                        var getLaunchIntent = applicationContext.packageManager.getLaunchIntentForPackage(packageName)
+                        applicationContext.startActivity(getLaunchIntent)
+                    }
+                    else if (action == "RESTART") {
+                        var getLaunchIntent = applicationContext.packageManager.getLaunchIntentForPackage(packageName)
+                        getLaunchIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        applicationContext.startActivity(getLaunchIntent)
+                    }
+                    else {
+                        var intent: Intent = Intent(action)
+                        Log.d("performSysAction", "Launching Intent: " + intent.toString())
+                        var possibleActivities = applicationContext.packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL)
+                        Log.d("performSysAction", "possibleActivities: " + possibleActivities.toString())
+                        for (activity in possibleActivities) {
+                            if (activity.activityInfo.packageName == packageName) {
+                                intent
+                                    .setComponent(
+                                        ComponentName(
+                                            activity.activityInfo.packageName,
+                                            activity.activityInfo.name
+                                        )
+                                    )
+                                Log.d("performSysAction", "Sending intent: " + intent.toString())
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                applicationContext.startActivity(intent)
+                                return streamState
+                            }
+                        }
+                        applicationContext.sendBroadcast(intent)
+                    }
+                }
             }
         }
         catch (th: Throwable) {
-            XLog.e(getLog("performSysAction"), th)
+            Log.d("performSysAction", th.toString())
         }
         return streamState
     }

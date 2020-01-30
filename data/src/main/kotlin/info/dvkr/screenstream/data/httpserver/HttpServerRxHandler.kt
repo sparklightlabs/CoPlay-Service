@@ -1,5 +1,6 @@
 package info.dvkr.screenstream.data.httpserver
 
+import android.util.Log
 import com.elvishew.xlog.XLog
 import com.jakewharton.rxrelay.BehaviorRelay
 import info.dvkr.screenstream.data.model.AppError
@@ -63,8 +64,8 @@ internal class HttpServerRxHandler(
         streamAddress = httpServerFiles.configureStreamAddress()
         appActionAddress = httpServerFiles.configureAppActionAddress()
         systemActionAddress = httpServerFiles.configureSystemActionAddress()
-        indexHtml = httpServerFiles.configureIndexHtml(
-                streamAddress, appActionAddress, systemActionAddress)
+        //indexHtml = httpServerFiles.configureIndexHtml(streamAddress, appActionAddress, systemActionAddress)
+        indexHtml = httpServerFiles.configureDirectorHTML(streamAddress, appActionAddress, systemActionAddress)
         pinAddress = httpServerFiles.configurePinAddress()
         pinRequestHtml = httpServerFiles.configurePinRequestHtml(streamAddress)
         pinRequestErrorHtml = httpServerFiles.configurePinRequestErrorHtml()
@@ -95,7 +96,10 @@ internal class HttpServerRxHandler(
             uri.startsWith(HttpServerFiles.JAVASCRIPT_ADDRESS) -> response.sendJavascript(httpServerFiles.getJavascript(uri.substringAfter("?")))
             uri.startsWith(HttpServerFiles.APP_ICON_ADDRESS) -> response.sendPng(httpServerFiles.getAppIconPng(uri.substringAfter("?")))
             uri.startsWith(HttpServerFiles.UI_ICON_ADDRESS) -> response.sendPng(httpServerFiles.getUIIconPng(uri.substringAfter("?")))
-            uri.startsWith(appActionAddress) -> onAppAction(uri.substringAfter("?")).run { response.empty() }
+            uri.startsWith(appActionAddress) -> {
+                Log.d("appActionAddress", "request Received")
+                onAppAction(uri.substringAfter("?")).run { response.empty() }
+            }
 
             uri == HttpServerFiles.ICON_PNG_ADDRESS -> response.sendPng(httpServerFiles.faviconPng)
             uri == HttpServerFiles.LOGO_PNG_ADDRESS -> response.sendPng(httpServerFiles.logoPng)

@@ -1,286 +1,286 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/css?bootstrap.min.css" crossorigin="anonymous">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="/css?bootstrap.min.css" crossorigin="anonymous">
 
-    <style>CSS_STYLE </style>
+        <style>CSS_STYLE</style>
 
-    <title>CoPlay</title>
-</head>
-<body style="overflow-y: scroll; overflow-x:hidden;">
+        <title>CoPlay</title>
+    </head>
+    <body style="overflow-y: scroll; overflow-x:hidden;">
 
-<div style="width: 100vw; height:100vh; position:fixed; top:0; left:0; z-index: 10; display:none;" id="fullScreenOverlay"></div>
+    <div style="width: 100vw; height:100vh; position:fixed; top:0; left:0; z-index: 10; display:none;" id="fullScreenOverlay"></div>
 
 
-<!-- ********************************* NAVBAR ********************************-->
-<div class="row  no-gutters">
-    <div class="container-fluid  myNavbar navbar-dark bg-dark box-shadow">
-        <div class="container-fluid h-100 d-flex justify-content-between px-0">
-            <div class="text-white navbar-brand d-flex align-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                <strong>CoPlay</strong>
+    <!-- ********************************* NAVBAR ********************************-->
+    <div class="row  no-gutters">
+        <div class="container-fluid  myNavbar navbar-dark bg-dark box-shadow">
+            <div class="container-fluid h-100 d-flex justify-content-between px-0">
+                <div class="text-white navbar-brand d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <strong>CoPlay</strong>
+                </div>
+                <button class="navbar-toggler" style="font-size: 1em" type="button" id="toggleCollapseBtn" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
             </div>
-            <button class="navbar-toggler" style="font-size: 1em" type="button" id="toggleCollapseBtn" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
         </div>
     </div>
-</div>
-ADDITIONAL_SETTINGS
+    ADDITIONAL_SETTINGS
 
-<!--**************************************************************************-->
-
+    <!--**************************************************************************-->
 
 
-<!-- ********************************* Content ********************************-->
-<div class="container" id="contentContainer">
-<div class="row my-3 mx-auto">
-    <!-- ********************************* VideoFrame******************************-->
-    <div class="col-md-8 h-75" id="col_1">
-        <div class="videoFrame bg-light mx-auto d-flex row align-items-center" id="vf">
-            <img src="SCREEN_STREAM_ADDRESS" class="defaultImg d-block mx-auto my-auto" id="screenImg"></img>
-        </div>
-        APP_CONTROL_UI
-        <!-- ********************************* SelectedApp******************************-->
-        <div class="container-fluid px-0 my-1 selectedAppBorder">
-            <div class="selectedApp" >
-                <div class="row px-3 py-1" style="height: 66%">
-                    <div class="container-fluid float-left">
-                        <div class="row">
-                            <div>
-                                <div class="appIcon">
-                                    <img src="" class=" mx-auto d-block" style="height: 94px; width: auto" id="currentAppImg"></img>
-                                </div>
-                            </div>
-                            <div class="appDescription">
-                                <div class="row no-gutters px-1 fixOverflow"  style="max-height: 66%;">
-                                    <div class="fixOverflow">
-                                        <h5 class="card-title" style="font-size: 1.15rem;" id="currentAppTitle">Sparklight Labs | CoPlay</h5>
+
+    <!-- ********************************* Content ********************************-->
+    <div class="container" id="contentContainer">
+    <div class="row my-3 mx-auto">
+        <!-- ********************************* VideoFrame******************************-->
+        <div class="col-md-8 h-75" id="col_1">
+            <div class="videoFrame bg-light mx-auto d-flex row align-items-center" id="vf">
+                <img src="SCREEN_STREAM_ADDRESS" class="defaultImg d-block mx-auto my-auto" id="screenImg"></img>
+            </div>
+            APP_CONTROL_UI
+            <!-- ********************************* SelectedApp******************************-->
+            <div class="container-fluid px-0 my-1 selectedAppBorder">
+                <div class="selectedApp" >
+                    <div class="row px-3 py-1" style="height: 66%">
+                        <div class="container-fluid float-left">
+                            <div class="row">
+                                <div>
+                                    <div class="appIcon">
+                                        <img src="" class=" mx-auto d-block" style="height: 94px; width: auto" id="currentAppImg"></img>
                                     </div>
                                 </div>
-                                <div class="row no-gutters px-1 py-1" style="height:  33%;">
-                                    <h6 class="card-subtitle mb-2 text-muted" style="font-size: .9rem;">Currently Selected</h6>
+                                <div class="appDescription">
+                                    <div class="row no-gutters px-1 fixOverflow"  style="max-height: 66%;">
+                                        <div class="fixOverflow">
+                                            <h5 class="card-title" style="font-size: 1.15rem;" id="currentAppTitle">Sparklight Labs | CoPlay</h5>
+                                        </div>
+                                    </div>
+                                    <div class="row no-gutters px-1 py-1" style="height:  33%;">
+                                        <h6 class="card-subtitle mb-2 text-muted" style="font-size: .9rem;">Currently Selected</h6>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+
+
+
+
+                    </div>
+                    <div class="row px-3" style="height: 33%;">
+                        <a onClick="resizeAppList()" class="col-md-12 pointerCursor" style="text-align: center;" id="ActionsCollapseBtn" data-toggle="collapse" data-target="#actionsCardDropDown" aria-controls="navbarHeader">
+                            Actions
+                            <br><img src="/icons?menu.png" class="uiIcon"></i></br>
+                        </a>
+
                     </div>
 
 
 
-
-
-                </div>
-                <div class="row px-3" style="height: 33%;">
-                    <a onClick="resizeAppList()" class="col-md-12 pointerCursor" style="text-align: center;" id="ActionsCollapseBtn" data-toggle="collapse" data-target="#actionsCardDropDown" aria-controls="navbarHeader">
-                        Actions
-                        <br><img src="/icons?menu.png" class="uiIcon"></i></br>
-                    </a>
-
                 </div>
 
-
-
-            </div>
-
-            <div class="actionsCard collapse" id="actionsCardDropDown" style="">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-8 col-md-7 py-4">
-                            <p class="text-muted">Coming Soon!</p>
-                        </div>
-                        <div class="col-sm-4 offset-md-1 py-4">
-                            <ul class="list-unstyled" style="text-align: center;">
-                                <li><a href="#">Coming Soon!</a></li>
-                            </ul>
+                <div class="actionsCard collapse" id="actionsCardDropDown" style="">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-8 col-md-7 py-4">
+                                <p class="text-muted">Coming Soon!</p>
+                            </div>
+                            <div class="col-sm-4 offset-md-1 py-4">
+                                <ul class="list-unstyled" style="text-align: center;">
+                                    <li><a href="#">Coming Soon!</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
+        <!--**************************************************************************-->
+        <div class="col-md-4 px-1" style="overflow-y: scroll; overflow-x: hidden; scrollbar-width: none;" id="col_2">
+            APPLICATION_LIST
+        </div>
+
     </div>
+    </div>
+
     <!--**************************************************************************-->
-    <div class="col-md-4 px-1" style="overflow-y: scroll; overflow-x: hidden; scrollbar-width: none;" id="col_2">
-        APPLICATION_LIST
-    </div>
 
-</div>
-</div>
+    <script src="/js?jquery-3.3.1.slim.min.js" type="text/javascript"></script>
+    <script src="/js?popper.min.js" type="text/javascript"></script>
+    <script src="/js?bootstrap.min.js" type="text/javascript"></script>
+    <script>
 
-<!--**************************************************************************-->
+    var noSleep = new NoSleep();
 
-<script src="/js?jquery-3.3.1.slim.min.js" type="text/javascript"></script>
-<script src="/js?popper.min.js" type="text/javascript"></script>
-<script src="/js?bootstrap.min.js" type="text/javascript"></script>
-<script>
+    document.addEventListener('click', function enableNoSleep() {
+      document.removeEventListener('click', enableNoSleep, false);
+      noSleep.enable();
+    }, false);
 
-var noSleep = new NoSleep();
-
-document.addEventListener('click', function enableNoSleep() {
-  document.removeEventListener('click', enableNoSleep, false);
-  noSleep.enable();
-}, false);
-
-$( document ).ready(function() {
-  handleAspectRatio();
-  handleContainerSize();
-  resizeAppList();
-  $("#fullScreenOverlay").on("click", function(){
-    unMakeFullScreen();
+    $( document ).ready(function() {
+      handleAspectRatio();
+      handleContainerSize();
+      resizeAppList();
+      $("#fullScreenOverlay").on("click", function(){
+        unMakeFullScreen();
+        });
     });
-});
 
-$( window ).on('resize', function() {
-  handleContainerSize();
-  handleAspectRatio();
-  resizeAppList();
-});
-
-function handleAspectRatio() {
-  $( ".videoFrame" ).height(.75*$( ".videoFrame" ).width());
-}
-
-function resizeAppList() {
-
-    setTimeout(function() {
-      console.log("resizing app list");
-        //768 is the pixel number that our columns wrap at.
-      if ($(window).width() >= 768) {
-       $("#col_2").height($("#col_1").height());
-      }
-      else {
-        $("#col_2").height("100%");
-      }
-    }, 250);
-
-}
-
-function handleContainerSize() {
-  var viewportWidth = $(window).width();
-  if (viewportWidth >= 992) {
-      $("#contentContainer").removeClass("container-fluid px-0");
-      $("#contentContainer").addClass("container");
-  }
-  if (viewportWidth < 992) {
-      $("#contentContainer").removeClass("container");
-      $("#contentContainer").addClass("px-0");
-  }
-}
-
-window.addEventListener('orientationchange', function () {
-    waitForAnimation().then(function() {
-      handleFullScreenOrientationChange();
+    $( window ).on('resize', function() {
+      handleContainerSize();
+      handleAspectRatio();
+      resizeAppList();
     });
-});
 
-function launchApp(element, request) {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", window.location.origin + request, true);
-    xmlHttp.send(null);
-    $("#currentAppImg").attr('src',$(element).find('img').attr('src'));
-    $("#currentAppTitle").text($(element).find('h5').text());
-}
-
-function sendRequest(request) {
-    console.log(request);
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", window.location.origin + request, true);
-    xmlHttp.send(null);
-}
-
-
-
-/**********************************FULLSCREEN HANDLERS*****************************/
-function unMakeFullScreen() {
-    $("#vf").removeClass("fullScreenVideo");
-    $("#vf").addClass("videoFrame");
-    $( ".videoFrame" ).height(.625*$( ".videoFrame" ).width());
-    $("#fullScreenOverlay").css("display","none");
-    $("#screenImg").removeClass("landscapeImg");
-    $("#screenImg").addClass("defaultImg");
-    document.cancelFullScreen = document.cancelFullScreen || document.webkitCancelFullScreen || document.mozCancelFullScreen || function () { return false; };
-    document.cancelFullScreen()
-}
-
-
-function makeFullScreen() {
-    $("#vf").removeClass("videoFrame");
-    $("#vf").addClass("fullScreenVideo");
-    $( "#vf" ).height("100vh");
-    $( "#vf" ).css("z-index","2");
-    $("#fullScreenOverlay").css("display","initial");
-}
-
-function toggleFullscreen() {
-    var element = document.documentElement;
-    element.requestFullScreen = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || function () { return false; };
-    document.cancelFullScreen = document.cancelFullScreen || document.webkitCancelFullScreen || document.mozCancelFullScreen || function () { return false; };
-    if (!isFullScreen()) {
-      element.requestFullScreen();
-      makeFullScreen();
-      handleFullScreenImg();
+    function handleAspectRatio() {
+      $( ".videoFrame" ).height(.75*$( ".videoFrame" ).width());
     }
-}
 
-function handleFullScreenImg() {
-    if (isPortrait()) {
-        $("#screenImg").removeClass("defaultImg");
-        $("#screenImg").addClass("landscapeImg");
+    function resizeAppList() {
+
+        setTimeout(function() {
+          console.log("resizing app list");
+            //768 is the pixel number that our columns wrap at.
+          if ($(window).width() >= 768) {
+           $("#col_2").height($("#col_1").height());
+          }
+          else {
+            $("#col_2").height("100%");
+          }
+        }, 250);
+
     }
-    else {
+
+    function handleContainerSize() {
+      var viewportWidth = $(window).width();
+      if (viewportWidth >= 992) {
+          $("#contentContainer").removeClass("container-fluid px-0");
+          $("#contentContainer").addClass("container");
+      }
+      if (viewportWidth < 992) {
+          $("#contentContainer").removeClass("container");
+          $("#contentContainer").addClass("px-0");
+      }
+    }
+
+    window.addEventListener('orientationchange', function () {
+        waitForAnimation().then(function() {
+          handleFullScreenOrientationChange();
+        });
+    });
+
+    function launchApp(element, request) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", window.location.origin + request, true);
+        xmlHttp.send(null);
+        $("#currentAppImg").attr('src',$(element).find('img').attr('src'));
+        $("#currentAppTitle").text($(element).find('h5').text());
+    }
+
+    function sendRequest(request) {
+        console.log(request);
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", window.location.origin + request, true);
+        xmlHttp.send(null);
+    }
+
+
+
+    /**********************************FULLSCREEN HANDLERS*****************************/
+    function unMakeFullScreen() {
+        $("#vf").removeClass("fullScreenVideo");
+        $("#vf").addClass("videoFrame");
+        $( ".videoFrame" ).height(.625*$( ".videoFrame" ).width());
+        $("#fullScreenOverlay").css("display","none");
         $("#screenImg").removeClass("landscapeImg");
         $("#screenImg").addClass("defaultImg");
+        document.cancelFullScreen = document.cancelFullScreen || document.webkitCancelFullScreen || document.mozCancelFullScreen || function () { return false; };
+        document.cancelFullScreen()
     }
-}
 
-function isPortrait() {
-    if($(window).height() >= $(window).width()){
-        //portrait
-        return true;
+
+    function makeFullScreen() {
+        $("#vf").removeClass("videoFrame");
+        $("#vf").addClass("fullScreenVideo");
+        $( "#vf" ).height("100vh");
+        $( "#vf" ).css("z-index","2");
+        $("#fullScreenOverlay").css("display","initial");
     }
-    return false;
-}
 
-function isFullScreen() {
-    if( window.innerHeight == screen.height) {
-        return true;
-    }
-    return false;
-}
-
-function waitForAnimation() {
-  const timeout = 120;
-  return new window.Promise(function(resolve) {
-    const go = (i, height0) => {
-      window.innerHeight != height0 || i >= timeout ?
-        resolve() :
-        window.requestAnimationFrame(() => go(i + 1, height0));
-    };
-    go(0, window.innerHeight);
-  });
-}
-
-
-function handleFullScreenOrientationChange() {
- if ($("#vf").hasClass("fullScreenVideo")) {
-        if ($("#screenImg").hasClass("landscapeImg")) {
-            $("#screenImg").removeClass("landscapeImg");
-            $("#screenImg").addClass("defaultImg");
+    function toggleFullscreen() {
+        var element = document.documentElement;
+        element.requestFullScreen = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || function () { return false; };
+        document.cancelFullScreen = document.cancelFullScreen || document.webkitCancelFullScreen || document.mozCancelFullScreen || function () { return false; };
+        if (!isFullScreen()) {
+          element.requestFullScreen();
+          makeFullScreen();
+          handleFullScreenImg();
         }
-        else if ($("#screenImg").hasClass("defaultImg")) {
+    }
+
+    function handleFullScreenImg() {
+        if (isPortrait()) {
             $("#screenImg").removeClass("defaultImg");
             $("#screenImg").addClass("landscapeImg");
         }
+        else {
+            $("#screenImg").removeClass("landscapeImg");
+            $("#screenImg").addClass("defaultImg");
+        }
     }
-}
 
-</script>
-</body>
+    function isPortrait() {
+        if($(window).height() >= $(window).width()){
+            //portrait
+            return true;
+        }
+        return false;
+    }
+
+    function isFullScreen() {
+        if( window.innerHeight == screen.height) {
+            return true;
+        }
+        return false;
+    }
+
+    function waitForAnimation() {
+      const timeout = 120;
+      return new window.Promise(function(resolve) {
+        const go = (i, height0) => {
+          window.innerHeight != height0 || i >= timeout ?
+            resolve() :
+            window.requestAnimationFrame(() => go(i + 1, height0));
+        };
+        go(0, window.innerHeight);
+      });
+    }
+
+
+    function handleFullScreenOrientationChange() {
+     if ($("#vf").hasClass("fullScreenVideo")) {
+            if ($("#screenImg").hasClass("landscapeImg")) {
+                $("#screenImg").removeClass("landscapeImg");
+                $("#screenImg").addClass("defaultImg");
+            }
+            else if ($("#screenImg").hasClass("defaultImg")) {
+                $("#screenImg").removeClass("defaultImg");
+                $("#screenImg").addClass("landscapeImg");
+            }
+        }
+    }
+
+    </script>
+    </body>
 
 </html>

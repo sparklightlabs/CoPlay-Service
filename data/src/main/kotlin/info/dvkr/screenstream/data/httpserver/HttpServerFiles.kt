@@ -8,8 +8,11 @@ import android.graphics.drawable.Drawable
 import com.elvishew.xlog.XLog
 import info.dvkr.screenstream.data.R
 import info.dvkr.screenstream.data.other.getLog
+import info.dvkr.screenstream.data.other.AndroidManifestService;
 import info.dvkr.screenstream.data.other.randomString
 import info.dvkr.screenstream.data.settings.SettingsReadOnly
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
 
@@ -34,6 +37,8 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         private const val BOOTSTRAP_CSS = "bootstrap.min.css"
 
         private const val INDEX_HTML = "index.html"
+        private const val DIRECTOR_HTML = "director.html"
+
         private const val INDEX_HTML_BACKGROUND_COLOR = "BACKGROUND_COLOR"
         private const val INDEX_HTML_SCREEN_STREAM_ADDRESS = "SCREEN_STREAM_ADDRESS"
         private const val INDEX_HTML_APP_CONTROL_UI_ADDRESS = "APP_CONTROL_UI"
@@ -70,6 +75,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         const val GO_HOME_ADDRESS = "go-home"
         const val GO_BACK_ADDRESS = "go-back"
         const val LAUNCH_APP_ADDRESS = "launch-app"
+        const val LAUNCH_ACTION_ADDRESS = "launch-action"
         const val CSS_ADDRESS = "/css"
     }
 
@@ -88,6 +94,9 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
 
     private val baseIndexHtml =
         String(getFileFromAssets(applicationContext, INDEX_HTML), StandardCharsets.UTF_8)
+
+    private val baseDirectorHtml =
+        String(getFileFromAssets(applicationContext, DIRECTOR_HTML), StandardCharsets.UTF_8)
 
     private val baseStyleSheet =
             String(getFileFromAssets(applicationContext, CSS_STYLESHEET), StandardCharsets.UTF_8)
@@ -268,6 +277,56 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
                 .replaceFirst(INDEX_HTML_ADDITIONAL_SETTINGS.toRegex(), buildAdditionalSettingsHTML(appControlUIAddress))
                 .replaceFirst(INDEX_HTML_CSS_STYLE.toRegex(), newStyleSheet)
                 .replaceFirst(INDEX_HTML_APPLICATION_LIST.toRegex(), appList)
+    }
+
+    //TODO: Store the json somewhere so we can check it in to hub
+    fun configureDirectorHTML(streamAddress: String, appControlUIAddress: String, systemActionAddress: String): String {
+      var coplayJson = configureCoPlayJSON(streamAddress, appControlUIAddress, systemActionAddress)
+        return baseDirectorHtml.replaceFirst("COPLAY_OBJECT".toRegex(), "var coplay = "+ coplayJson.toString() +";")
+    }
+
+    fun configureCoPlayJSON(streamAddress: String, appControlUIAddress: String, systemActionAddress: String) : JSONObject {
+
+        val coplayObject = JSONObject()
+        coplayObject.put("streamAddress", streamAddress)
+        coplayObject.put("systemActionAddress", systemActionAddress)
+        coplayObject.put("appControlAddress", appControlUIAddress)
+        coplayObject.put("APP_ICON_ADDRESS", APP_ICON_ADDRESS)
+        coplayObject.put("UI_ICON_ADDRESS", UI_ICON_ADDRESS)
+        coplayObject.put("TOGGLE_STREAM_ADDRESS", TOGGLE_STREAM_ADDRESS)
+        coplayObject.put("CHANGE_IMAGE_SIZE_ADDRESS", CHANGE_IMAGE_SIZE_ADDRESS)
+        coplayObject.put("GO_HOME_ADDRESS", GO_HOME_ADDRESS)
+        coplayObject.put("GO_BACK_ADDRESS", GO_BACK_ADDRESS)
+        coplayObject.put("LAUNCH_APP_ADDRESS", LAUNCH_APP_ADDRESS)
+        coplayObject.put("LAUNCH_ACTION_ADDRESS", LAUNCH_ACTION_ADDRESS)
+
+
+        var appsArray = JSONArray()
+
+        this.applicationContext.packageManager.getInstalledApplications(0).forEach {
+            if ((it.flags and ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) {
+                applicationIconMap.put(it.packageName, getAppIconFromDrawable(it.packageName))
+                val appInfo = applicationContext.packageManager.getPackageInfo(it.packageName, 0)
+                val appObject = JSONObject()
+                appObject.put(
+                    "name",
+                    this.applicationContext.packageManager.getApplicationLabel(it).toString()
+                )
+                appObject.put("packageName", it.packageName);
+                var actions = AndroidManifestService.getAppActions(
+                    appInfo.applicationInfo,
+                    applicationContext.packageManager
+                )
+                var actionsArray = JSONArray()
+                for (action in actions) {
+                    actionsArray.put(action);
+                }
+                appObject.put("actions", actionsArray)
+                appsArray.put(appObject)
+            }
+        }
+        coplayObject.put("appsList", appsArray)
+        return coplayObject
     }
 
     fun configurePinAddress(): String =

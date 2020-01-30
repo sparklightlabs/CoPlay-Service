@@ -5,6 +5,7 @@ import android.animation.PropertyValuesHolder
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -21,6 +22,9 @@ import info.dvkr.screenstream.data.model.FixableError
 import info.dvkr.screenstream.data.other.getLog
 import info.dvkr.screenstream.data.settings.Settings
 import info.dvkr.screenstream.data.settings.SettingsReadOnly
+
+import info.dvkr.screenstream.data.other.AndroidManifestService
+
 import info.dvkr.screenstream.logging.sendLogsInEmail
 import info.dvkr.screenstream.service.AppService
 import info.dvkr.screenstream.service.ServiceMessage
@@ -30,6 +34,8 @@ import info.dvkr.screenstream.ui.fragment.SettingsFragment
 import info.dvkr.screenstream.ui.fragment.StreamFragment
 import info.dvkr.screenstream.ui.router.FragmentRouter
 import kotlinx.android.synthetic.main.activity_app.*
+import org.json.JSONArray
+import org.json.JSONObject
 import org.koin.android.ext.android.inject
 
 class AppActivity : BaseActivity() {

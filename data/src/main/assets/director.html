@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        a:hover {
+            background-color: #f8f9fa;
+            text-decoration: none  !important;
+            cursor: pointer;
+        }
+        a {
+        color: unset;
+        }
+        #toggleActionsView:hover {
+         background: #f8f9fa;
+        }
+    </style>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css?bootstrap.min.css" crossorigin="anonymous">
+
+    <title>CoPlay</title>
+</head>
+<body>
+    <div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContent">
+            <div class="bg-dark p-4" style="text-align: center;" id="additionalSettings">
+
+            </div>
+        </div>
+        <nav class="navbar navbar-dark bg-dark">
+            <h4 class="my-auto" style="color:white;"> CoPlay </h4>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+        </nav>
+    </div>
+
+    <div class="container" id="mainContainer">
+        <div class="row">
+            <div class="col-lg-8 my-1" style="overflow: scroll; max-height: 150vh;" id="column1">
+                <div class="d-flex bg-light" id="videoFrame" style="min-height: 330px; height: 53vh; background:wheat;">
+
+                </div>
+                <div class="my-1 d-flex" id="basicNav" style="height: 60px;">
+
+                </div>
+            </div>
+            <div class="col-lg-4 my-1" style="overflow: scroll; max-height: 92vh;" id="appList">
+
+            </div>
+        </div>
+    </div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="/js?jquery-3.3.1.slim.min.js" type="text/javascript"></script>
+<script src="/js?popper.min.js" type="text/javascript"></script>
+<script src="/js?bootstrap.min.js" type="text/javascript"></script>
+<script>
+
+        COPLAY_OBJECT
+
+        $(window).resize(function(){
+            resize()
+        });
+
+        $( document ).ready(function() {
+            resize()
+        });
+
+        function resize() {
+        if($(window).width()<1200){
+            $('#mainContainer').removeClass('container');
+            $('#mainContainer').addClass('container-fluid');
+        }
+        else {
+            $('#mainContainer').removeClass('container-fluid');
+            $('#mainContainer').addClass('container');
+        }
+        }
+
+        function buildHtml() {
+
+            var appListHTML="";
+            var i;
+            for (i = 0; i < coplay.appsList.length; i++) {
+                var app = coplay.appsList[i]
+                appListHTML +=
+                `   <a onClick='launchApp(this, "${coplay.systemActionAddress}?${coplay.LAUNCH_APP_ADDRESS}=${app.packageName}", ${i})'  class="d-flex">          `  +
+                '       <div class=" d-flex my-0 " style="width: 100%; height: 125px;">        '  +
+                '           <div class="mx-2 my-auto" style="height: 90px; width: 90px;" id="appIcon">   '  +
+                `               <img class="w-100 h-100 bg-light" src=${coplay.APP_ICON_ADDRESS}?${app.packageName} ></img>   `  +
+                '           </div>   '  +
+                '           <div class="bg-light mx-0 my-auto"style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden; height: 110px; width: calc(100% - 135px);" id="appLabel">   '  +
+                `               <h5 class="card-title my-1" style="font-size: 1.05rem;"> ${app.name} </h5>   `  +
+                `               <h6 class="card-subtitle my-2 text-muted" style="font-size: .9rem;">${app.packageName}</p>   `  +
+                '           </div>   '  +
+                '       </div>   '  +
+                '  </a>  ' ;
+            }
+            $("#appList").append(appListHTML);
+
+            var videoHTML =
+            `<img class="w-100 my-auto mx-auto" style="height: auto; max-height: 100%;" src=${coplay.streamAddress} id="video"></img>` ;
+            $("#videoFrame").append(videoHTML);
+            $('#video').attr('onClick', 'toggleFullScreen()');
+
+
+            var basicNavBar =
+            `   <a onClick=sendRequest("${coplay.appControlAddress}?${coplay.TOGGLE_STREAM_ADDRESS}") class="mx-1 d-flex border" style="height: 100%; width: 33%;">  `  +
+            '       <div class="mx-auto my-auto" >                    '  +
+            '           <div  >                             '  +
+            '               <div style="height: 25px; width: 25px">                                     '  +
+            `                   <img src="${coplay.UI_ICON_ADDRESS}?play.png" class="h-100 w-100">                `  +
+            '               </div>                            '  +
+            '           </div>      '  +
+            '       </div>  '  +
+            '  </a>  ' +
+            `   <a onClick=toggleFullScreen() class="mx-1 d-flex border" style="height: 100%; width: 33%;">  `  +
+            '       <div class="mx-auto my-auto" >                    '  +
+            '           <div  >                             '  +
+            '               <div style="height: 25px; width: 25px">                                     '  +
+            `                   <img src="${coplay.UI_ICON_ADDRESS}?fullscreen.png" class="h-100 w-100">                `  +
+            '               </div>                            '  +
+            '           </div>      '  +
+            '       </div>  '  +
+            '  </a>  ' +
+            `   <a onClick=sendRequest("${coplay.systemActionAddress}?${coplay.GO_HOME_ADDRESS}") class="mx-1 d-flex border" style="height: 100%; width: 33%;">  `  +
+            '       <div class="mx-auto my-auto" >                    '  +
+            '           <div  >                             '  +
+            '               <div style="height: 25px; width: 25px">                                     '  +
+            `                   <img src=${coplay.UI_ICON_ADDRESS}?home.png class="h-100 w-100">                `  +
+            '               </div>                            '  +
+            '           </div>      '  +
+            '       </div>  '  +
+            '  </a>  ';
+            $("#basicNav").append(basicNavBar);
+
+            var addtionalSettingsHTML =
+            '   <div class="mx-auto" style="max-width: 650px;">  '  +
+            '       <h5 class="text-white h4">Additional Settings</h5>  '  +
+            '       <div class="text-white">Image Quality</div>  '  +
+            `       <input type="range" min="10" max="80" class="custom-range" onchange=sendRequest("${coplay.appControlAddress}?${coplay.CHANGE_IMAGE_SIZE_ADDRESS}="+this.value)>  `  +
+            '       <div class="text-white">Image Compression</div>  '  +
+            `       <input type="range" min="10" max="80" class="custom-range" onchange=sendRequest("${coplay.appControlAddress}?${coplay.CHANGE_IMAGE_COMPRESSION_ADDRESS}="+this.value)>  `  +
+            '  </div>  ' ;
+            $("#additionalSettings").append(addtionalSettingsHTML);
+
+            var currentlySelectedHTML =
+            ' <div id="currentSelectionContainer"> '+
+            '   <div class="my-1" style="height: 175px;" id="currentlySelected">  '  +
+            '       <!--BasicNav-->  '  +
+            '       <div class="d-flex border-bottom" style="width: 100%; height: 75%;">  '  +
+            '           <div class="mx-1 my-auto bg-light" style="height: 95%; width: calc(175px *.80);"></div>  '  +
+            '           <div class="my-auto" style="height: 95%;">   '  +
+            '           <h5 class="card-title" style="font-size: 1.15rem;">CoPlay | Sparklight Labs</h5>  '  +
+            '           <h6 class="card-subtitle mb-2 text-muted" style="font-size: .9rem;"> Currently selected</h6>  '  +
+            '           </div>  '  +
+            '       </div>  '  +
+            '       <div style="width: 100%; height: 25%;">   '  +
+            '       <a>   '  +
+            '           <div class="d-flex w-100 h-100">  '  +
+            '               <button class=" w-100 h-100 navbar-toggler" type="button" data-toggle="collapse" data-target="#CoplayActions" aria-controls="CoplayActions" aria-expanded="false" aria-label="Toggle navigation" id="toggleActionsView">  '  +
+            '                       <div class=" mx-auto my-auto"> Available Actions</div>  '  +
+            '               </button>  '  +
+            '           </div>  '  +
+            '       </a>  '  +
+            '     '  +
+            '       </div>  '  +
+            '       <!--BasicNav-->  '  +
+            '   </div>  '  +
+            '   <div class="collapse" id="CoplayActions">  '  +
+            '       <div class="bg-light p-4" style="text-align: center; height: 100px;" id="additionalSettings">  '  +
+            '     '  +
+            '       </div>  '  +
+            '  </div>  ' +
+            '</div> ';
+            $("#column1").append(currentlySelectedHTML);
+
+        }
+
+        function drawSelected(app) {
+
+            $("#currentSelectionContainer").remove();
+            var currentlySelectedHTML =
+            ' <div id="currentSelectionContainer"> '+
+            '   <div class="my-1" style="height: 175px;" id="currentlySelected">  '  +
+            '       <!--BasicNav-->  '  +
+            '       <div class="d-flex border-bottom" style="width: 100%; height: 75%;">  '  +
+            `           <img src=${coplay.APP_ICON_ADDRESS}?${app.packageName} class="mx-1 my-auto bg-light" style="height: 95%; width: calc(175px *.80);"></img>  `  +
+            '           <div class="my-auto" style="height: 95%;">   '  +
+            `           <h5 class="card-title" style="font-size: 1.15rem;">${app.name}</h5>  `  +
+            `           <h6 class="card-subtitle mb-2 text-muted" style="font-size: .9rem;"> ${app.packageName}</h6>  `  +
+            '           </div>  '  +
+            '       </div>  '  +
+            '       <div style="width: 100%; height: 25%;">   '  +
+            '       <a>   '  +
+            '           <div class="d-flex w-100 h-100">  '  +
+            '               <button class=" w-100 h-100 navbar-toggler" type="button" data-toggle="collapse" data-target="#CoplayActions" aria-controls="CoplayActions" aria-expanded="false" aria-label="Toggle navigation" id="toggleActionsView">  '  +
+            '                       <div class=" mx-auto my-auto"><u>Available Actions</u></div>  '  +
+            '               </button>  '  +
+            '           </div>  '  +
+            '       </a>  '  +
+            '     '  +
+            '       </div>  '  +
+            '       <!--BasicNav-->  '  +
+            '   </div>  '  +
+            '   <div class="collapse show" id="CoplayActions">  '  +
+            '  </div>  ' +
+            '</div> ';
+            $("#column1").append(currentlySelectedHTML)
+
+            var actions =
+            '<div class="p-1 border-bottom" style="overflow: scroll; text-align: center;" id="additionalSettings">  ' +
+            `   <a class="d-flex" onClick=launchAction("${coplay.systemActionAddress}?${coplay.LAUNCH_ACTION_ADDRESS}=${app.packageName},RESUME") > ` +
+            `       <div class="text-primary my-1" style="width: 100%; height: 25px;"> RESUME </div>` +
+            '   </a> ' +
+            `   <a class="d-flex" onClick=launchAction("${coplay.systemActionAddress}?${coplay.LAUNCH_ACTION_ADDRESS}=${app.packageName},RESTART") > ` +
+            `       <div class="text-primary my-1" style="width: 100%; height: 25px;"> RESTART </div>` +
+            '   </a> ';
+
+            for (var i = 0; i < app.actions.length; i++) {
+            actions +=
+            `   <a class="d-flex" onClick=launchAction("${coplay.systemActionAddress}?${coplay.LAUNCH_ACTION_ADDRESS}=${app.packageName},${app.actions[i]}") > ` +
+            `       <div class="text-primary my-1" style="width: 100%; height: 25px;"> ${app.actions[i]} </div>` +
+            '   </a> ';
+            }
+            actions +=
+            '</div> ' ;
+
+            $("#CoplayActions").append(actions);
+
+
+            console.log(app);
+        }
+
+        function launchApp(element, request, appIndex) {
+            console.log("Launching App");
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", window.location.origin + request, true);
+            xmlHttp.send(null);
+            // Populate current selected with actions. Wrap all currentCard in div
+            drawSelected(coplay.appsList[appIndex]);
+        }
+
+        function launchAction(request) {
+            console.log("Launching Action: " + window.location.origin + request);
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", window.location.origin + request, true);
+            xmlHttp.send(null);
+        }
+
+        $("#video").click(function(){
+            console.log("video on click");
+            toggleFullScreen();
+        });
+
+        function toggleFullScreen() {
+            console.log("toggleFullScreen");
+            if ($('#video').css('position') == 'absolute') {
+                $("#video").detach().appendTo('#videoFrame')
+                $("#video").css({'position': '', 'top': '', 'left': '', 'height': 'auto', 'width': '100%', 'max-height': '100%'});
+            }
+            else {
+                $("#video").detach().appendTo(":root")
+                $("#video").css({'position': 'absolute', 'top': '0', 'left': '0', 'height': '100vh', 'width': '100vw', 'max-height': '100vh'});
+            }
+        }
+
+        buildHtml();
+
+        console.log(coplay);
+
+    </script>
+<script>
+
+    var noSleep = new NoSleep();
+
+    //added check for mac because I'm pretty sure no sleep makes macs churn
+    document.addEventListener('click', function enableNoSleep() {
+      document.removeEventListener('click', enableNoSleep, false);
+      if (!isMacintosh()) {
+      noSleep.enable();
+      }
+    }, false);
+
+    function isMacintosh() {
+      return navigator.platform.indexOf('Mac') > -1
+    }
+
+    // Gonna need to refactor
+
+
+    function sendRequest(request) {
+        console.log(request);
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", window.location.origin + request, true);
+        xmlHttp.send(null);
+    }
+
+</script>
+</body>
+</html>
