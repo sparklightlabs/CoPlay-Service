@@ -72,11 +72,18 @@
         });
 
         function resize() {
-        if($(window).width()<1200){
+        if($(window).width()<650){
             $('#mainContainer').removeClass('container');
+            $('#mainContainer').addClass('container-fluid');
+            $('#mainContainer').addClass('no-gutters');
+        }
+        else if($(window).width()<1200){
+            $('#mainContainer').removeClass('container');
+            $('#mainContainer').removeClass('no-gutters');
             $('#mainContainer').addClass('container-fluid');
         }
         else {
+            $('#mainContainer').removeClass('no-gutters');
             $('#mainContainer').removeClass('container-fluid');
             $('#mainContainer').addClass('container');
         }
@@ -96,7 +103,13 @@
                 '           </div>   '  +
                 '           <div class="bg-light mx-0 my-auto"style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden; height: 110px; width: calc(100% - 135px);" id="appLabel">   '  +
                 `               <h5 class="card-title my-1" style="font-size: 1.05rem;"> ${app.name} </h5>   `  +
-                `               <h6 class="card-subtitle my-2 text-muted" style="font-size: .9rem;">${app.packageName}</p>   `  +
+                `               <h6 class="card-subtitle my-2 text-muted" style="font-size: .9rem;">${app.packageName}</h6>   `;
+
+                if (app.actions.length > 0) {
+                                appListHTML += '<div class="d-flex" style="margin-top: 2.25rem;"><h6 class="text-primary">CoPlay Enabled</h6></div>'
+                }
+
+                appListHTML +=
                 '           </div>   '  +
                 '       </div>   '  +
                 '  </a>  ' ;

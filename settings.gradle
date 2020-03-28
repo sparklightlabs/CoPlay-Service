@@ -1,2 +1,2 @@
 rootProject.buildFileName = "build.gradle"
-include(":app", ":data", ':custom')
+include(":app", ":data")

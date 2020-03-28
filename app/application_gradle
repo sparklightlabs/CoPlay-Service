@@ -6,11 +6,12 @@ apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'io.fabric'
 
 android {
+    // Add your signing config here if needed
     signingConfigs {
         config {
             keyAlias 'local'
             keyPassword 'android'
-            storeFile file('/Users/bradyriddle/local')
+            storeFile file('path/to/storefile')
             storePassword 'android'
         }
     }
@@ -27,24 +28,18 @@ android {
     }
     buildTypes {
         debug {
+            debuggable true
             ext.enableCrashlytics = false
             ext.alwaysUpdateBuildId = false
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        fabricfree {
-            debuggable true
-            ext.enableCrashlytics = false
-            ext.alwaysUpdateBuildId = false
-            //minifyEnabled true
-            //shrinkResources true
-            //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
-        }
         release {
             minifyEnabled true
-            shrinkResources true
+            ext.enableCrashlytics = false
+            ext.alwaysUpdateBuildId = false
+            //signingConfig signingConfigs.config  // Add your signing config here if needed
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -54,9 +49,8 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-        debug.java.srcDirs += 'src/debug/kotlin'
-        release.java.srcDirs += 'src/release/kotlin'
-        fabricfree.java.srcDirs += 'src/fabricfree/kotlin'
+        debug.java.srcDirs += 'src/fabricfree/kotlin'
+        release.java.srcDirs += 'src/fabricfree/kotlin'
     }
     packagingOptions {
         exclude 'META-INF/INDEX.LIST'
@@ -86,17 +80,5 @@ dependencies {
     implementation "org.koin:koin-android:$koin"
     implementation "com.github.iamironz:binaryprefs:$binaryprefs"
     implementation "com.elvishew:xlog:$xlog"
-    releaseImplementation "com.google.firebase:firebase-core:$firebaseCore"
-    releaseImplementation "com.crashlytics.sdk.android:crashlytics:$fabricCrashlytics"
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
-    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakcanary"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary"
 }
 
-apply plugin: "com.google.gms.google-services"
-
-android.applicationVariants.all { variant ->
-    if (variant.name == "fabricfree") {
-        project.tasks.getByName("process" + variant.name.capitalize() + "GoogleServices").enabled = false
-    }
-}

@@ -6,14 +6,6 @@ apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'io.fabric'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'local'
-            keyPassword 'android'
-            storeFile file('/Users/bradyriddle/local')
-            storePassword 'android'
-        }
-    }
     compileSdkVersion(compileSdk)
     buildToolsVersion(buildTools)
     defaultConfig {
@@ -27,24 +19,18 @@ android {
     }
     buildTypes {
         debug {
-            ext.enableCrashlytics = false
-            ext.alwaysUpdateBuildId = false
-            minifyEnabled false
-            shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        fabricfree {
             debuggable true
             ext.enableCrashlytics = false
             ext.alwaysUpdateBuildId = false
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
         }
         release {
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            ext.enableCrashlytics = false
+            ext.alwaysUpdateBuildId = false
+            //signingConfig signingConfigs.config  // Add your signing config here if needed
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -54,9 +40,8 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-        debug.java.srcDirs += 'src/debug/kotlin'
-        release.java.srcDirs += 'src/release/kotlin'
-        fabricfree.java.srcDirs += 'src/fabricfree/kotlin'
+        debug.java.srcDirs += 'src/fabricfree/kotlin'
+        release.java.srcDirs += 'src/fabricfree/kotlin'
     }
 }
 
@@ -82,9 +67,4 @@ dependencies {
     implementation "org.koin:koin-android:$koin"
     implementation "com.github.iamironz:binaryprefs:$binaryprefs"
     implementation "com.elvishew:xlog:$xlog"
-    releaseImplementation "com.google.firebase:firebase-core:$firebaseCore"
-    releaseImplementation "com.crashlytics.sdk.android:crashlytics:$fabricCrashlytics"
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
-    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakcanary"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary"
 }

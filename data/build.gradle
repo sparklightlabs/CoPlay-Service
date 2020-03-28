@@ -9,7 +9,7 @@ android {
         config {
             keyAlias 'local'
             keyPassword 'android'
-            storeFile file('/Users/bradyriddle/local')
+            storeFile file('/path/to/storefile')
             storePassword 'android'
         }
     }
@@ -23,17 +23,20 @@ android {
     }
     buildTypes {
         debug {
-            minifyEnabled true
+            shrinkResources false
+            minifyEnabled false
+            ext.enableCrashlytics = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        fabricfree {
             debuggable true
             //minifyEnabled true
             //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
-            minifyEnabled true
+            shrinkResources false
+            minifyEnabled false
+            ext.enableCrashlytics = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable true
         }
     }
     compileOptions {
@@ -42,9 +45,8 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-        debug.java.srcDirs += 'src/debug/kotlin'
-        release.java.srcDirs += 'src/release/kotlin'
-        fabricfree.java.srcDirs += 'src/fabricfree/kotlin'
+        debug.java.srcDirs += 'src/fabricfree/kotlin'
+        release.java.srcDirs += 'src/fabricfree/kotlin'
     }
 }
 

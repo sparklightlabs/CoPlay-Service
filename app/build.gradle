@@ -1,4 +1,4 @@
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
@@ -6,17 +6,19 @@ apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'io.fabric'
 
 android {
+    // Add your signing config here if needed
     signingConfigs {
         config {
             keyAlias 'local'
             keyPassword 'android'
-            storeFile file('/Users/bradyriddle/local')
+            storeFile file('path/to/storefile')
             storePassword 'android'
         }
     }
     compileSdkVersion(compileSdk)
     buildToolsVersion(buildTools)
     defaultConfig {
+        applicationId = "info.dvkr.screenstream"
         minSdkVersion(minSdk)
         targetSdkVersion(targetSdk)
         versionCode = 30017
@@ -26,24 +28,18 @@ android {
     }
     buildTypes {
         debug {
-            ext.enableCrashlytics = false
-            ext.alwaysUpdateBuildId = false
-            minifyEnabled false
-            shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        fabricfree {
             debuggable true
             ext.enableCrashlytics = false
             ext.alwaysUpdateBuildId = false
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
         }
         release {
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            ext.enableCrashlytics = false
+            ext.alwaysUpdateBuildId = false
+            //signingConfig signingConfigs.config  // Add your signing config here if needed
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -53,9 +49,12 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-        debug.java.srcDirs += 'src/debug/kotlin'
-        release.java.srcDirs += 'src/release/kotlin'
-        fabricfree.java.srcDirs += 'src/fabricfree/kotlin'
+        debug.java.srcDirs += 'src/fabricfree/kotlin'
+        release.java.srcDirs += 'src/fabricfree/kotlin'
+    }
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/io.netty.versions.properties'
     }
 }
 
@@ -64,6 +63,8 @@ kapt { useBuildCache = true }
 
 dependencies {
     implementation project(':data')
+    implementation 'com.job:droidnet:2.0.0'
+    implementation 'com.android.volley:volley:1.1.1'
     implementation "org.jetbrains:annotations:$jetbrainsAnnotations"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
@@ -79,9 +80,5 @@ dependencies {
     implementation "org.koin:koin-android:$koin"
     implementation "com.github.iamironz:binaryprefs:$binaryprefs"
     implementation "com.elvishew:xlog:$xlog"
-    releaseImplementation "com.google.firebase:firebase-core:$firebaseCore"
-    releaseImplementation "com.crashlytics.sdk.android:crashlytics:$fabricCrashlytics"
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
-    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakcanary"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary"
 }
+

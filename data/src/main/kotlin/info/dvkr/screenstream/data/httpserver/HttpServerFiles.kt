@@ -2,9 +2,11 @@ package info.dvkr.screenstream.data.httpserver
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.util.Log
 import com.elvishew.xlog.XLog
 import info.dvkr.screenstream.data.R
 import info.dvkr.screenstream.data.other.getLog
@@ -306,22 +308,44 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         this.applicationContext.packageManager.getInstalledApplications(0).forEach {
             if ((it.flags and ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) {
                 applicationIconMap.put(it.packageName, getAppIconFromDrawable(it.packageName))
-                val appInfo = applicationContext.packageManager.getPackageInfo(it.packageName, 0)
                 val appObject = JSONObject()
                 appObject.put(
                     "name",
                     this.applicationContext.packageManager.getApplicationLabel(it).toString()
                 )
                 appObject.put("packageName", it.packageName);
+
+                try {
+                    val appInfo = applicationContext.packageManager.getPackageInfo(it.packageName, PackageManager.GET_META_DATA);
+                    val coplayActions =
+                        appInfo.applicationInfo.metaData.getString("Coplay.Actions")
+                    var actionsArray = JSONArray()
+                    if (coplayActions != null ) {
+                        Log.d("APP INFO: ", coplayActions.toString())
+                        val actionsArray = JSONArray(coplayActions.split(','))
+                        appObject.put("actions", actionsArray)
+                    }
+                    else {
+                        appObject.put("actions", "")
+                    }
+                }
+                catch (throwable: Throwable) {
+                    appObject.put("actions", "")
+                    //Log.d("APP INFO ERROR",throwable.toString());
+                }
+
+                /*
                 var actions = AndroidManifestService.getAppActions(
                     appInfo.applicationInfo,
                     applicationContext.packageManager
                 )
-                var actionsArray = JSONArray()
                 for (action in actions) {
                     actionsArray.put(action);
                 }
                 appObject.put("actions", actionsArray)
+                */
+
+
                 appsArray.put(appObject)
             }
         }
