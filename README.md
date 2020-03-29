@@ -1,98 +1,40 @@
-# Screen Stream over HTTP
-An Android mobile app for viewing device screen in your web browser.
-
-<a href='https://play.google.com/store/apps/details?id=info.dvkr.screenstream'>
-<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height="100"/></a>
-<a href="https://f-droid.org/packages/info.dvkr.screenstream/" target="_blank">
-<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="100"/></a>
-
-The application allows viewing the device screen in your web browser.
-The main idea is to show your device screen during presentations and demos.
-No need of any additional software except for this app and a web browser.
-No annoying ads or pop-ups.
-
-Read this in other languages: [正體中文](README.zh-tw.md)
-
-It uses MJPEG to encode screen images and send them through the network. So it works with any desktop or mobile browser which supports MJPEG (Chrome, Safari, EDGE, Firefox).
-
-The application works via WiFi and/or 3G/LTE network.<br>
-Support for IPv4 and IPv6.<br>
-Fast and stable WiFi recommended because of high traffic and low network delay requirement.
-No Internet required, however, there must be a network connection between the client and the device.
-
+# CoPlay-Service
+ 
+## What Is CoPlay-Service?
+ 
+CoPlay-Service together with the CoPlay-Launcher and CoPlay developer integrations make up the 3 parts of the CoPlay Accessibility Framework. CoPlay-Service is the background process that runs the http server, handles requests and triggers actions on the Quest/Go/Android VR device.
+ 
+CoPlay-Launcher is the VR frontend used to launch and communicate with CoPlay-Service. The CoPlay developer integration allows you to create actions and events within your app that can be triggered by CoPlay.
+ 
+CoPlay-Service is meant to be used in conjunction with CoPlay-Launcher.  Any changes or improvements made to core CoPlay functionality can be made in CoPlay-Service, then exported as a library (aar) and included in the CoPlay-Launcher unity project as a plugin. More details on that can be found in the CoPlay-Launcher Repo.
+ 
+## Development Quick Start Guide
+ 
+CoPlay-Service can be built as a 2d app that can run on a phone or VR device (though we don't recommend 2d mode for the quest or Go. The OS doesn't like it when 2D apps try and launch services). 2D mode allows for rapid iteration without deploying to a VR device. CoPlay-Service is primarily meant to be built as a Plugin to be used with CoPlay-Launcher.
+ 
+To build in 2D mode, Copy the contents of app/application_grade and paste it into app/build.gradle. To build the library for export copy the contents of app/library_gradle into app/build.gradle. These two files (application_gradle and library_gradle) are just alternate gradle files that can be swapped in depending on your needs.
+ 
+If you've made changes and wish to export them, first build them then search for a file with .aar extension in the project directory. You'll notice that the there are two aar files, app.aar (or app-debug.aar) and data.aar (or data-debug.aar). You'll need both for CoPlay Launcher (Data is where the http server lives and App is where the service lives). Copy those .aar files and place them in the plugins directory of the CoPlay-Launcher unity project. Again more details can be found in that repo.
+ 
+If you want to get a sense for where important things are at, I suggest looking through the most recent commit history.
+ 
+## Just a heads up
+ 
+CoPlay is a streaming app. It's not real time, but it's pretty good.  There can be an expected delay of at least 0.5-1 second or more on bad WiFi or on heavy CPU load by other apps.<br>
+ 
+CoPlay will throttle before game frame rates are affected.
+ 
+You don't need an internet connection but you will need wifi. Some WiFi networks (mostly public/guest) block connections between its clients for security reasons, so you may not be able to connect to the device via WiFi. Fast and stable WiFi recommended (preferably 5ghz) because of high traffic and low network delay requirement.
+ 
 The number of client connections is unlimited, but be aware that each of them requires some CPU resources and bandwidth to send data.
-
-Application uses Android Cast feature and requires at least Android 5.0 to run.
-
-**WARNING:** This is not a real time streaming app. Expected delay is at least 0.5-1 second or more on slow devices, bad WiFi or on heavy CPU load by other apps.<br>
-**WARNING:** This app is not designed for streaming video, especially HD video. Use Chromecast instead.<br>
-**WARNING:** This app does NOT support SOUND streaming, because MJPEG does not support sound.<br>
-**WARNING:** Some cell operators may block incoming connections to your device for security reasons, so, even if the device has an IP address from a cell operator, you may not be able to connect to the device on this IP address.<br>
-**WARNING:** Some WiFi networks (mostly public/guest) block connections between its clients for security reasons, so you may not be able to connect to the device via WiFi. For example, a laptop and a phone in this such a WiFi network will not be able to connect to each other.
-
-### Known problems
-
-1. On some devices, system returns image in unknown format. Mostly on devices with no official Android 5.0 or above. Possible Android bug. App will show an error message. No solution available.
-2. On some devices no notification icon showing but notification is present. Android bug: 213309.
-
-### Screenshots
-
-![](screenshots/screenshot_1.png)&nbsp;
-![](screenshots/screenshot_2.png)<br>
-![](screenshots/screenshot_3.png)&nbsp;
-![](screenshots/screenshot_4.png)<br>
-![](screenshots/screenshot_5.png)&nbsp;
-![](screenshots/screenshot_6.png)<br>
-![](screenshots/screenshot_7.png)&nbsp;
-![](screenshots/screenshot_8.png)<br>
-![](screenshots/screenshot_9.png)&nbsp;
-![](screenshots/screenshot_10.png)
-
-## Features and libraries
-
-Version 3.x based on Clean Architecture, Single Activity and MVI patterns and use:
-* [Kotlin](https://kotlinlang.org)
-* [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
-* [Android Jetpack libraries](https://developer.android.com/jetpack/)
-* [Koin](https://github.com/Ekito/koin)
-* [Alerter](https://github.com/Tapadoo/Alerter)
-* [Material Dialogs](https://github.com/afollestad/material-dialogs)
-* [Binary Preferences](https://github.com/iamironz/binaryprefs)
-* [RxJava 1.x](https://github.com/ReactiveX/RxJava/tree/1.x)
-* [RxNetty](https://github.com/ReactiveX/RxNetty)
-* [Crashlytics](https://try.crashlytics.com/)
-* [xLog](https://github.com/elvishew/xLog)
-* [LeakCanary](https://github.com/square/leakcanary)
-
-
-## Developed By
-
-Dmitriy Krivoruchko - <dkrivoruchko@gmail.com>
-
-If there are any issues or ideas feel free to contact me.
-
+ 
+CoPlay is a heavily modified fork of ScreenStream by Dmitriy Krivoruchko <https://github.com/dkrivoruchko/ScreenStream>. He is a rockstar His source is licensed as MIT, My additions are open sourced but under the AGPL license. For more information, please see below.
+ 
+Also, you may notice that the code for CoPlay Hub is not included in the repo. It will still be available in our releases. We are very excited about the potential for CoPlay Hub. Keep an eye out for more information.
+ 
 ## License
+ 
+CoPlay-Service is Licensed as AGPL. This means that you are free to clone and use as you like (commercially or otherwise) but requires that sources are made available for any changes made to CoPlay-Service or if CoPlay-Service source code is integrated into any product. We want to ensure that improvements made to the service can be enjoyed by everybody.
+ 
+We expect CoPlay and The CoPlay developer integrations to be used by enterprises and institutions alike and want to make it crystal clear that using the CoPlay developer integration **does not** tie your app to the AGPL license. The developer integration is written to be very loosely coupled with the CoPlay service and is also licensed differently (MIT). We expect CoPlay to be shipped with apps that use it's developer integrations and bundling the two also **does not** tie your app to the AGPL license. So no worries there :)
 
-```
-The MIT License (MIT)
-
-Copyright (c) 2016 Dmitriy Krivoruchko
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
