@@ -3,6 +3,7 @@ package info.dvkr.screenstream.data.httpserver
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.os.BatteryManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
@@ -350,6 +351,15 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
             }
         }
         coplayObject.put("appsList", appsArray)
+
+        val batteryObject = JSONObject()
+        val bm: BatteryManager = this.applicationContext.getSystemService("batterymanager") as BatteryManager
+        batteryObject.put("level", bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY))
+        batteryObject.put("charging", bm.isCharging())
+        coplayObject.put("battery", batteryObject)
+
+        coplayObject.put("serial", android.os.Build.SERIAL)
+
         return coplayObject
     }
 
