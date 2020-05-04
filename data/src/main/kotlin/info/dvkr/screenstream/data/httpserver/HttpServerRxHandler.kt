@@ -35,7 +35,6 @@ internal class HttpServerRxHandler(
         onError: (AppError) -> Unit
 ) : HttpServerCoroutineScope(onError), RequestHandler<ByteBuf, ByteBuf> {
 
-    private val indexHtml: String
     private val streamAddress: String
     private val systemActionAddress: String
     private val appActionAddress: String
@@ -64,8 +63,6 @@ internal class HttpServerRxHandler(
         streamAddress = httpServerFiles.configureStreamAddress()
         appActionAddress = httpServerFiles.configureAppActionAddress()
         systemActionAddress = httpServerFiles.configureSystemActionAddress()
-        //indexHtml = httpServerFiles.configureIndexHtml(streamAddress, appActionAddress, systemActionAddress)
-        indexHtml = httpServerFiles.configureDirectorHTML(streamAddress, appActionAddress, systemActionAddress)
         pinAddress = httpServerFiles.configurePinAddress()
         pinRequestHtml = httpServerFiles.configurePinRequestHtml(streamAddress)
         pinRequestErrorHtml = httpServerFiles.configurePinRequestErrorHtml()
@@ -106,8 +103,9 @@ internal class HttpServerRxHandler(
             uri == HttpServerFiles.FULLSCREEN_ON_PNG_ADDRESS -> response.sendPng(httpServerFiles.fullScreenOnPng)
             uri == HttpServerFiles.FULLSCREEN_OFF_PNG_ADDRESS -> response.sendPng(httpServerFiles.fullScreenOffPng)
             uri.startsWith(systemActionAddress) -> onSystemAction(uri.substringAfter("?")).run {response.empty() } // possible get rid of sending a response...
-            uri == HttpServerFiles.DEFAULT_HTML_ADDRESS -> response.sendHtml(if (pinEnabled) pinRequestHtml else indexHtml)
-            uri == pinAddress && pinEnabled -> response.sendHtml(indexHtml)
+            uri == HttpServerFiles.DEFAULT_HTML_ADDRESS -> response.sendHtml(if (pinEnabled) pinRequestHtml else
+                httpServerFiles.configureDirectorHTML(streamAddress, appActionAddress, systemActionAddress))
+            uri == pinAddress && pinEnabled -> response.sendHtml(httpServerFiles.configureDirectorHTML(streamAddress, appActionAddress, systemActionAddress))
             uri.startsWith(HttpServerFiles.DEFAULT_PIN_ADDRESS) && pinEnabled -> response.sendHtml(pinRequestErrorHtml)
             uri == streamAddress -> sendStream(response)
             else -> response.redirect(request.hostHeader)
