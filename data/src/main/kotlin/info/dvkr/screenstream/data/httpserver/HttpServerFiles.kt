@@ -75,6 +75,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         const val TOGGLE_STREAM_ADDRESS = "toggle-stream"
         const val CHANGE_IMAGE_SIZE_ADDRESS = "image-size"
         const val CHANGE_IMAGE_COMPRESSION_ADDRESS = "image-compression"
+        const val GET_JSON_ADDRESS = "/get-json"
         const val GO_HOME_ADDRESS = "go-home"
         const val GO_BACK_ADDRESS = "go-back"
         const val LAUNCH_APP_ADDRESS = "launch-app"
@@ -298,6 +299,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         coplayObject.put("UI_ICON_ADDRESS", UI_ICON_ADDRESS)
         coplayObject.put("TOGGLE_STREAM_ADDRESS", TOGGLE_STREAM_ADDRESS)
         coplayObject.put("CHANGE_IMAGE_SIZE_ADDRESS", CHANGE_IMAGE_SIZE_ADDRESS)
+        coplayObject.put("GET_JSON_ADDRESS", GET_JSON_ADDRESS)
         coplayObject.put("GO_HOME_ADDRESS", GO_HOME_ADDRESS)
         coplayObject.put("GO_BACK_ADDRESS", GO_BACK_ADDRESS)
         coplayObject.put("LAUNCH_APP_ADDRESS", LAUNCH_APP_ADDRESS)

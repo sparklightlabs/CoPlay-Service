@@ -19,6 +19,7 @@ import io.reactivex.netty.protocol.http.server.RequestHandler
 import io.reactivex.netty.threads.RxJavaEventloopScheduler
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import rx.BackpressureOverflow
 import rx.Observable
 import rx.functions.Action0
@@ -97,6 +98,13 @@ internal class HttpServerRxHandler(
                 Log.d("appActionAddress", "request Received")
                 onAppAction(uri.substringAfter("?")).run { response.empty() }
             }
+            uri.startsWith(HttpServerFiles.GET_JSON_ADDRESS) -> {
+                response.sendJSON(httpServerFiles.configureCoPlayJSON(
+                        httpServerFiles.configureStreamAddress(),
+                        httpServerFiles.configureAppActionAddress(),
+                        httpServerFiles.configureSystemActionAddress()
+                ))
+            }
 
             uri == HttpServerFiles.ICON_PNG_ADDRESS -> response.sendPng(httpServerFiles.faviconPng)
             uri == HttpServerFiles.LOGO_PNG_ADDRESS -> response.sendPng(httpServerFiles.logoPng)
@@ -119,6 +127,15 @@ internal class HttpServerRxHandler(
         setHeader(HttpHeaderNames.CACHE_CONTROL, "no-cache,no-store,max-age=0,must-revalidate")
         setHeader(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE)
         return writeStringAndFlushOnEach(Observable.just(javascript))
+    }
+
+    private fun HttpServerResponse<ByteBuf>.sendJSON(json: JSONObject): Observable<Void> {
+
+        status = HttpResponseStatus.OK
+        addHeader(HttpHeaderNames.CONTENT_TYPE, "application/json charset=UTF-8")
+        setHeader(HttpHeaderNames.CACHE_CONTROL, "no-cache,no-store,max-age=0,must-revalidate")
+        setHeader(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE)
+        return writeStringAndFlushOnEach(Observable.just(json.toString(2)))
     }
 
     private fun HttpServerResponse<ByteBuf>.sendCSS(stylesheet: String): Observable<Void> {
