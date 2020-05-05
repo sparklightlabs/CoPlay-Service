@@ -364,7 +364,23 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         batteryObject.put("charging", bm.isCharging())
         coplayObject.put("battery", batteryObject)
 
-        coplayObject.put("serial", android.os.Build.SERIAL)
+        val sysInfo = JSONObject()
+        sysInfo.put("serial", android.os.Build.SERIAL)
+        sysInfo.put("osVersion", System.getProperty("os.version"))
+        sysInfo.put("incrementalVersion", android.os.Build.VERSION.INCREMENTAL)
+        sysInfo.put("osApiLevel", android.os.Build.VERSION.SDK_INT)
+        sysInfo.put("device", android.os.Build.DEVICE)
+        sysInfo.put("buildDisplay", android.os.Build.DISPLAY)
+        sysInfo.put("board", android.os.Build.BOARD)
+        sysInfo.put("brand", android.os.Build.BRAND)
+        sysInfo.put("fingerprint", android.os.Build.FINGERPRINT)
+        sysInfo.put("host", android.os.Build.HOST)
+        sysInfo.put("id", android.os.Build.ID)
+        sysInfo.put("hardware", android.os.Build.HARDWARE)
+        sysInfo.put("model", android.os.Build.MODEL)
+        sysInfo.put("product", android.os.Build.PRODUCT)
+        sysInfo.put("releaseVersion", android.os.Build.VERSION.RELEASE)
+        coplayObject.put("sysInfo", sysInfo)
 
         return coplayObject
     }

@@ -162,7 +162,7 @@
             '  </div>  ' ;
             $("#additionalSettings").append(addtionalSettingsHTML);
 
-            var batteryHTML = `<span id="serial" style="color:white">${coplay.serial}</span><span id="battery" style="color:white">Battery: ${coplay.battery.level}%${coplay.battery.charging ? " and charging" : ", not charging"}</span>`;
+            var batteryHTML = `<span id="serial" style="color:white">${coplay.sysInfo.serial}</span><span id="battery" style="color:white">Battery: ${coplay.battery.level}%${coplay.battery.charging ? " and charging" : ", not charging"}</span>`;
             $(batteryHTML).insertAfter(".navbar h4");
 
             var currentlySelectedHTML =
