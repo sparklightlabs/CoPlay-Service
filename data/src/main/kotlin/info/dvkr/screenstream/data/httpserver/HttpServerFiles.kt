@@ -331,6 +331,10 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
                     else {
                         appObject.put("actions", "")
                     }
+                    appObject.put("versionName", appInfo.versionName)
+                    appObject.put("versionCode", appInfo.versionCode)
+                    appObject.put("firstInstallTime", appInfo.firstInstallTime)
+                    appObject.put("lastUpdateTime", appInfo.lastUpdateTime)
                 }
                 catch (throwable: Throwable) {
                     appObject.put("actions", "")
