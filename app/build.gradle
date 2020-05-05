@@ -18,7 +18,7 @@ android {
     compileSdkVersion(compileSdk)
     buildToolsVersion(buildTools)
     defaultConfig {
-        applicationId = "info.dvkr.screenstream"
+        applicationId = 'com.SparklightLabs.CoPlay'
         minSdkVersion(minSdk)
         targetSdkVersion(targetSdk)
         versionCode = 30017
