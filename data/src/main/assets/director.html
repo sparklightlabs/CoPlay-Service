@@ -162,6 +162,9 @@
             '  </div>  ' ;
             $("#additionalSettings").append(addtionalSettingsHTML);
 
+            var batteryHTML = `<span id="serial" style="color:white">${coplay.sysInfo.serial}</span><span id="battery" style="color:white">Battery: ${coplay.battery.level}%${coplay.battery.charging ? " and charging" : ", not charging"}</span>`;
+            $(batteryHTML).insertAfter(".navbar h4");
+
             var currentlySelectedHTML =
             ' <div id="currentSelectionContainer"> '+
             '   <div class="my-1" style="height: 175px;" id="currentlySelected">  '  +

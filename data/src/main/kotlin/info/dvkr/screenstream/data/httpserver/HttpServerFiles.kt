@@ -3,6 +3,7 @@ package info.dvkr.screenstream.data.httpserver
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.os.BatteryManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
@@ -74,6 +75,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         const val TOGGLE_STREAM_ADDRESS = "toggle-stream"
         const val CHANGE_IMAGE_SIZE_ADDRESS = "image-size"
         const val CHANGE_IMAGE_COMPRESSION_ADDRESS = "image-compression"
+        const val GET_JSON_ADDRESS = "/get-json"
         const val GO_HOME_ADDRESS = "go-home"
         const val GO_BACK_ADDRESS = "go-back"
         const val LAUNCH_APP_ADDRESS = "launch-app"
@@ -297,6 +299,7 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
         coplayObject.put("UI_ICON_ADDRESS", UI_ICON_ADDRESS)
         coplayObject.put("TOGGLE_STREAM_ADDRESS", TOGGLE_STREAM_ADDRESS)
         coplayObject.put("CHANGE_IMAGE_SIZE_ADDRESS", CHANGE_IMAGE_SIZE_ADDRESS)
+        coplayObject.put("GET_JSON_ADDRESS", GET_JSON_ADDRESS)
         coplayObject.put("GO_HOME_ADDRESS", GO_HOME_ADDRESS)
         coplayObject.put("GO_BACK_ADDRESS", GO_BACK_ADDRESS)
         coplayObject.put("LAUNCH_APP_ADDRESS", LAUNCH_APP_ADDRESS)
@@ -328,6 +331,10 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
                     else {
                         appObject.put("actions", "")
                     }
+                    appObject.put("versionName", appInfo.versionName)
+                    appObject.put("versionCode", appInfo.versionCode)
+                    appObject.put("firstInstallTime", appInfo.firstInstallTime)
+                    appObject.put("lastUpdateTime", appInfo.lastUpdateTime)
                 }
                 catch (throwable: Throwable) {
                     appObject.put("actions", "")
@@ -350,6 +357,31 @@ class HttpServerFiles(context: Context, private val settingsReadOnly: SettingsRe
             }
         }
         coplayObject.put("appsList", appsArray)
+
+        val batteryObject = JSONObject()
+        val bm: BatteryManager = this.applicationContext.getSystemService("batterymanager") as BatteryManager
+        batteryObject.put("level", bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY))
+        batteryObject.put("charging", bm.isCharging())
+        coplayObject.put("battery", batteryObject)
+
+        val sysInfo = JSONObject()
+        sysInfo.put("serial", android.os.Build.SERIAL)
+        sysInfo.put("osVersion", System.getProperty("os.version"))
+        sysInfo.put("incrementalVersion", android.os.Build.VERSION.INCREMENTAL)
+        sysInfo.put("osApiLevel", android.os.Build.VERSION.SDK_INT)
+        sysInfo.put("device", android.os.Build.DEVICE)
+        sysInfo.put("buildDisplay", android.os.Build.DISPLAY)
+        sysInfo.put("board", android.os.Build.BOARD)
+        sysInfo.put("brand", android.os.Build.BRAND)
+        sysInfo.put("fingerprint", android.os.Build.FINGERPRINT)
+        sysInfo.put("host", android.os.Build.HOST)
+        sysInfo.put("id", android.os.Build.ID)
+        sysInfo.put("hardware", android.os.Build.HARDWARE)
+        sysInfo.put("model", android.os.Build.MODEL)
+        sysInfo.put("product", android.os.Build.PRODUCT)
+        sysInfo.put("releaseVersion", android.os.Build.VERSION.RELEASE)
+        coplayObject.put("sysInfo", sysInfo)
+
         return coplayObject
     }
 

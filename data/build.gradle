@@ -48,6 +48,9 @@ android {
         debug.java.srcDirs += 'src/fabricfree/kotlin'
         release.java.srcDirs += 'src/fabricfree/kotlin'
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 androidExtensions { experimental = true }
